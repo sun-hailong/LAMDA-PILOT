@@ -1,0 +1,28 @@
+{
+    "prefix": "reproduce",
+    "dataset": "cifar224",
+    "memory_size": 2000,
+    "memory_per_class": 20,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 10,
+    "increment": 10,
+    "model_name": "icarl",
+    "convnet_type": "vit_base_patch16_224",
+    "device": ["0"],
+    "seed": [1993],
+    
+    "init_epoch": 20,
+    "init_lr": 1e-3,
+    "init_milestones": [60, 120, 170],
+    "init_lr_decay": 0.1,
+    "init_weight_decay": 0.0005,
+    "epochs": 20,
+    "lrate": 1e-3,
+    "milestones": [80, 120],
+    "lrate_decay": 0.1,
+    "batch_size": 128,
+    "weight_decay": 2e-4,
+    "T": 2
+}
+
