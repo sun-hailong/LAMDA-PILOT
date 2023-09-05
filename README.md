@@ -46,13 +46,13 @@ This is a pre-trained class-incremental learning toolbox.
 #### CIFAR-100
 
 <div align="center">
-<img src="./resources/cifarb0inc10.png" width="600px">
+<img src="./resources/cifarb0inc10.jpg" width="600px">
 </div>
 
 #### ImageNet-R
 
 <div align="center">
-<img src="./resources/imagenetRb0inc10.png" width="600px">
+<img src="./resources/imagenetRb0inc10.jpg" width="600px">
 </div>
 
 ## ☄️ how-to-use
