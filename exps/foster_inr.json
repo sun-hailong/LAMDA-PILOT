@@ -9,7 +9,7 @@
     "increment": 10,
     "model_name": "foster",
     "convnet_type": "vit_base_patch16_224",
-    "device": ["3", "2", "1", "0"],
+    "device": ["0"],
     "seed": [1993],
     
     "beta1":0.96,
@@ -25,7 +25,7 @@
     "boosting_epochs" : 20,
     "compression_epochs" : 20,
     "lr" : 1e-3,
-    "batch_size" : 128,
+    "batch_size" : 32,
     "weight_decay" : 5e-4,
     "num_workers" : 8,
     "T" : 2

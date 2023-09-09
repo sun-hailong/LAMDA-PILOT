@@ -1,9 +1,9 @@
 {
     "prefix": "reproduce",
-    "dataset": "cifar224",
-    "memory_size": 2000,
+    "dataset": "imagenetr",
+    "memory_size": 4000,
     "memory_per_class": 20,
-    "fixed_memory": false,
+    "fixed_memory": true,
     "shuffle": true,
     "init_cls": 10,
     "increment": 10,
@@ -21,7 +21,7 @@
     "lrate": 1e-3,
     "milestones": [80, 120, 150],
     "lrate_decay": 0.1,
-    "batch_size": 128,
+    "batch_size": 64,
     "weight_decay": 2e-4,
     "T": 2
 }

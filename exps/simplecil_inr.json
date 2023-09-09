@@ -9,7 +9,7 @@
     "increment": 10,
     "model_name": "simplecil",
     "convnet_type": "pretrained_vit_b16_224",
-    "device": ["2"],
+    "device": ["0"],
     "seed": [1993],
     
     "tuned_epoch": 0,

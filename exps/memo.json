@@ -26,7 +26,7 @@
     "milestones" : [80,120,150],
     "epochs": 20,
     "lrate" : 1e-3,
-    "batch_size" : 128,
+    "batch_size" : 32,
     "weight_decay" : 2e-4,
     "lrate_decay" : 0.1,
     "alpha_aux" : 1.0

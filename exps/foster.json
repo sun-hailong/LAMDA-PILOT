@@ -25,7 +25,7 @@
     "boosting_epochs": 20,
     "compression_epochs": 20,
     "lr": 1e-3,
-    "batch_size": 128,
+    "batch_size": 32,
     "weight_decay": 5e-4,
     "num_workers": 8,
     "T": 2

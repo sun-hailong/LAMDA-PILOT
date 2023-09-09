@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href=""><img src="https://img.shields.io/badge/PILT-v0.1-darkcyan"></a>
-  <a href=""><img src="https://img.shields.io/github/stars/sun-hailong/LAMDA-PILT?style=social"></a>
+  <a href=""><img src="https://img.shields.io/github/stars/sun-hailong/LAMDA-PILT?color=4fb5ee"></a>
   <a href=""><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsun-hailong%2FLAMDA-PILT&count_bg=%23FFA500&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visitors&edge_flat=false"></a>
   <a href=""><img src="https://black.readthedocs.io/en/stable/_static/license.svg"></a>
   <a href=""><img src="https://img.shields.io/github/last-commit/sun-hailong/LAMDA-PILT?color=blue"></a>
@@ -23,7 +23,7 @@
 
 ## 🎉 Introduction
 
-This is a pre-trained class-incremental learning toolbox.
+Welcome to PILT, a pre-trained class-incremental learning toolbox <a href="https://arxiv.org/abs/">[Paper]</a>. It includes not only a collection of reproduced CIL algorithm based on pre-trained models, but also provides current state-of-the-art algorithms for further advancements in pre-trained CIL research.
 
 ## 🌟 Methods Reproduced
 
@@ -78,17 +78,16 @@ cd LAMDA-PILT
 ### 🔑 Run experiment
 
 1. Edit the `[MODEL NAME].json` file for global settings.
-2. Edit the `[DATASET NAME]` directory. (e.g. `cifar`)
-3. Edit the hyperparameters in the corresponding `[MODEL NAME].py` file (e.g., `models/l2p.py`).
-4. Run:
+2. Edit the hyperparameters in the corresponding `[MODEL NAME].py` file (e.g., `models/l2p.py`).
+3. Run:
 
     ```bash
-    python main.py --config=./exps/[DATASET NAME]/[MODEL NAME].json
+    python main.py --config=./exps/[MODEL NAME].json
     ```
 
     where [MODEL NAME] should be chosen from `finetune`, `der`, `coil`, `icarl`, `l2p`,  `dual_prompt`, `coda_prompt`, `simplecil`, `memo`, `foster`, etc.
 
-5. `hyper-parameters`
+4. `hyper-parameters`
 
     When using PILT, you can edit the global parameters and algorithm-specific hyper-parameter in the corresponding json file.
 

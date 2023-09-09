@@ -5,24 +5,21 @@
     "memory_per_class": 20,
     "fixed_memory": true,
     "shuffle": true,
+    "epochs": 20,
     "init_cls": 10,
     "increment": 10,
-    "model_name": "icarl",
+    "sinkhorn": 0.464,
+    "calibration_term": 1.5,
+    "norm_term": 3.0,
+    "reg_term": 1e-3,
+    "model_name": "coil",
     "convnet_type": "vit_base_patch16_224",
-    "device": ["2"],
+    "device": ["0"],
     "seed": [1993],
-    
-    "init_epoch": 20,
-    "init_lr": 1e-3,
-    "init_milestones": [60, 120, 170],
-    "init_lr_decay": 0.1,
-    "init_weight_decay": 0.0005,
-    "epochs": 20,
+
     "lrate": 1e-3,
     "milestones": [80, 120],
     "lrate_decay": 0.1,
-    "batch_size": 128,
-    "weight_decay": 2e-4,
+    "batch_size": 64,
     "T": 2
 }
-

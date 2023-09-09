@@ -36,7 +36,7 @@ class COIL(BaseLearner):
 
     def solving_ot(self):
         with torch.no_grad():
-            if self._total_classes == self.data_manager.get_total_classnum():
+            if self._total_classes == self.data_manager.nb_classes:
                 print("training over, no more ot solving")
                 return None
             each_time_class_num = self.data_manager.get_task_size(1)
@@ -140,8 +140,6 @@ class COIL(BaseLearner):
 
         self._train(self.train_loader, self.test_loader)
         self.build_rehearsal_memory(data_manager, self.samples_per_class)
-        # self._reduce_exemplar(data_manager, memory_size // self._total_classes)
-        # self._construct_exemplar(data_manager, memory_size // self._total_classes)
 
     def _train(self, train_loader, test_loader):
         self._network.to(self._device)
@@ -252,7 +250,7 @@ class COIL(BaseLearner):
 
     def _extract_class_means(self, data_manager, low, high):
         self._ot_prototype_means = np.zeros(
-            (data_manager.get_total_classnum(), self._network.feature_dim)
+            (data_manager.nb_classes, self._network.feature_dim)
         )
         with torch.no_grad():
             for class_idx in range(low, high):
@@ -275,7 +273,7 @@ class COIL(BaseLearner):
     def _extract_class_means_with_memory(self, data_manager, low, high):
 
         self._ot_prototype_means = np.zeros(
-            (data_manager.get_total_classnum(), self._network.feature_dim)
+            (data_manager.nb_classes, self._network.feature_dim)
         )
         memoryx, memoryy = self._data_memory, self._targets_memory
         with torch.no_grad():

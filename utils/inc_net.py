@@ -180,6 +180,7 @@ class BaseNet(nn.Module):
         self.convnet = get_convnet(args, pretrained)
         print('After BaseNet initialization.')
         self.fc = None
+        self._device = args["device"][0]
 
         if 'resnet' in args['convnet_type']:
             self.model_type = 'cnn'

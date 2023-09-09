@@ -208,7 +208,7 @@ class FOSTER(BaseLearner):
                 )
 
             prog_bar.set_description(info)
-            logging.info(info)
+        logging.info(info)
 
     def _feature_boosting(self, train_loader, test_loader, optimizer, scheduler):
         prog_bar = tqdm(range(self.args["boosting_epochs"]))
@@ -283,10 +283,10 @@ class FOSTER(BaseLearner):
                     train_acc,
                 )
             prog_bar.set_description(info)
-            logging.info(info)
+        logging.info(info)
 
     def _feature_compression(self, train_loader, test_loader):
-        self._snet = FOSTERNet(self.args, False)
+        self._snet = FOSTERNet(self.args, True)
         self._snet.update_fc(self._total_classes)
         if len(self._multiple_gpus) > 1:
             self._snet = nn.DataParallel(self._snet, self._multiple_gpus)
@@ -355,7 +355,7 @@ class FOSTER(BaseLearner):
                     train_acc,
                 )
             prog_bar.set_description(info)
-            logging.info(info)
+        logging.info(info)
         if len(self._multiple_gpus) > 1:
             self._snet = self._snet.module
         if self.is_student_wa:

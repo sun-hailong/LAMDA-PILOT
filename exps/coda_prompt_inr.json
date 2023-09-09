@@ -9,7 +9,7 @@
     "increment": 10,
     "model_name": "coda_prompt",
     "convnet_type": "vit_base_patch16_224_coda_prompt",
-    "device": ["3"],
+    "device": ["0"],
     "seed": [0],
     
     "tuned_epoch": 50,
