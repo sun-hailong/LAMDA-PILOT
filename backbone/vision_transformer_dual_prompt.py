@@ -40,7 +40,7 @@ from timm.models.helpers import build_model_with_cfg, resolve_pretrained_cfg, na
 from timm.models.layers import PatchEmbed, Mlp, DropPath, trunc_normal_, lecun_normal_
 from timm.models.registry import register_model
 
-from convs.prompt import EPrompt
+from backbone.prompt import EPrompt
 
 _logger = logging.getLogger(__name__)
 
@@ -859,7 +859,7 @@ def _create_vision_transformer(variant, pretrained=False, **kwargs):
 
 
 @register_model
-def vit_tiny_patch16_224_dual_prompt(pretrained=False, **kwargs):
+def vit_tiny_patch16_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Tiny (Vit-Ti/16)
     """
     model_kwargs = dict(patch_size=16, embed_dim=192, depth=12, num_heads=3, **kwargs)
@@ -868,7 +868,7 @@ def vit_tiny_patch16_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_tiny_patch16_384_dual_prompt(pretrained=False, **kwargs):
+def vit_tiny_patch16_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Tiny (Vit-Ti/16) @ 384x384.
     """
     model_kwargs = dict(patch_size=16, embed_dim=192, depth=12, num_heads=3, **kwargs)
@@ -877,7 +877,7 @@ def vit_tiny_patch16_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch32_224_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch32_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/32)
     """
     model_kwargs = dict(patch_size=32, embed_dim=384, depth=12, num_heads=6, **kwargs)
@@ -886,7 +886,7 @@ def vit_small_patch32_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch32_384_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch32_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/32) at 384x384.
     """
     model_kwargs = dict(patch_size=32, embed_dim=384, depth=12, num_heads=6, **kwargs)
@@ -895,7 +895,7 @@ def vit_small_patch32_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_224_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/16)
     NOTE I've replaced my previous 'small' model definition and weights with the small variant from the DeiT paper
     """
@@ -905,7 +905,7 @@ def vit_small_patch16_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_384_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/16)
     NOTE I've replaced my previous 'small' model definition and weights with the small variant from the DeiT paper
     """
@@ -915,7 +915,7 @@ def vit_small_patch16_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch32_224_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch32_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/32) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k, source https://github.com/google-research/vision_transformer.
     """
@@ -925,7 +925,7 @@ def vit_base_patch32_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch32_384_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch32_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base model (ViT-B/32) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 384x384, source https://github.com/google-research/vision_transformer.
     """
@@ -935,7 +935,7 @@ def vit_base_patch32_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 224x224, source https://github.com/google-research/vision_transformer.
     """
@@ -945,7 +945,7 @@ def vit_base_patch16_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_384_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base model (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 384x384, source https://github.com/google-research/vision_transformer.
     """
@@ -955,7 +955,7 @@ def vit_base_patch16_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch8_224_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch8_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/8) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 224x224, source https://github.com/google-research/vision_transformer.
     """
@@ -965,7 +965,7 @@ def vit_base_patch8_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch32_224_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch32_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/32) from original paper (https://arxiv.org/abs/2010.11929). No pretrained weights.
     """
     model_kwargs = dict(patch_size=32, embed_dim=1024, depth=24, num_heads=16, **kwargs)
@@ -974,7 +974,7 @@ def vit_large_patch32_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch32_384_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch32_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/32) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 384x384, source https://github.com/google-research/vision_transformer.
     """
@@ -984,7 +984,7 @@ def vit_large_patch32_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch16_224_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch16_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 224x224, source https://github.com/google-research/vision_transformer.
     """
@@ -994,7 +994,7 @@ def vit_large_patch16_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch16_384_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch16_384_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-1k weights fine-tuned from in21k @ 384x384, source https://github.com/google-research/vision_transformer.
     """
@@ -1004,7 +1004,7 @@ def vit_large_patch16_384_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch14_224_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch14_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/14)
     """
     model_kwargs = dict(patch_size=14, embed_dim=1024, depth=24, num_heads=16, **kwargs)
@@ -1013,7 +1013,7 @@ def vit_large_patch14_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_huge_patch14_224_dual_prompt(pretrained=False, **kwargs):
+def vit_huge_patch14_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Huge model (ViT-H/14) from original paper (https://arxiv.org/abs/2010.11929).
     """
     model_kwargs = dict(patch_size=14, embed_dim=1280, depth=32, num_heads=16, **kwargs)
@@ -1022,7 +1022,7 @@ def vit_huge_patch14_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_giant_patch14_224_dual_prompt(pretrained=False, **kwargs):
+def vit_giant_patch14_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Giant model (ViT-g/14) from `Scaling Vision Transformers` - https://arxiv.org/abs/2106.04560
     """
     model_kwargs = dict(patch_size=14, embed_dim=1408, mlp_ratio=48/11, depth=40, num_heads=16, **kwargs)
@@ -1031,7 +1031,7 @@ def vit_giant_patch14_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_gigantic_patch14_224_dual_prompt(pretrained=False, **kwargs):
+def vit_gigantic_patch14_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Gigantic model (ViT-G/14) from `Scaling Vision Transformers` - https://arxiv.org/abs/2106.04560
     """
     model_kwargs = dict(patch_size=14, embed_dim=1664, mlp_ratio=64/13, depth=48, num_heads=16, **kwargs)
@@ -1040,7 +1040,7 @@ def vit_gigantic_patch14_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_tiny_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_tiny_patch16_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Tiny (Vit-Ti/16).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1051,7 +1051,7 @@ def vit_tiny_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch32_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/16)
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1062,7 +1062,7 @@ def vit_small_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/16)
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1073,7 +1073,7 @@ def vit_small_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch32_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base model (ViT-B/32) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1084,7 +1084,7 @@ def vit_base_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base model (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1095,7 +1095,7 @@ def vit_base_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch8_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch8_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base model (ViT-B/8) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1106,7 +1106,7 @@ def vit_base_patch8_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch32_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/32) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has a representation layer but the 21k classifier head is zero'd out in original weights
@@ -1117,7 +1117,7 @@ def vit_large_patch32_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_large_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_large_patch16_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Large model (ViT-L/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer
@@ -1128,7 +1128,7 @@ def vit_large_patch16_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_huge_patch14_224_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_huge_patch14_224_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Huge model (ViT-H/14) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has a representation layer but the 21k classifier head is zero'd out in original weights
@@ -1139,7 +1139,7 @@ def vit_huge_patch14_224_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_sam_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_sam_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) w/ SAM pretrained weights. Paper: https://arxiv.org/abs/2106.01548
     """
     model_kwargs = dict(patch_size=16, embed_dim=768, depth=12, num_heads=12, **kwargs)
@@ -1148,7 +1148,7 @@ def vit_base_patch16_224_sam_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch32_224_sam_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch32_224_sam_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/32) w/ SAM pretrained weights. Paper: https://arxiv.org/abs/2106.01548
     """
     model_kwargs = dict(patch_size=32, embed_dim=768, depth=12, num_heads=12, **kwargs)
@@ -1157,7 +1157,7 @@ def vit_base_patch32_224_sam_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_224_dino_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_224_dino_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/16) w/ DINO pretrained weights (no head) - https://arxiv.org/abs/2104.14294
     """
     model_kwargs = dict(patch_size=16, embed_dim=384, depth=12, num_heads=6, **kwargs)
@@ -1166,7 +1166,7 @@ def vit_small_patch16_224_dino_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch8_224_dino_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch8_224_dino_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small (ViT-S/8) w/ DINO pretrained weights (no head) - https://arxiv.org/abs/2104.14294
     """
     model_kwargs = dict(patch_size=8, embed_dim=384, depth=12, num_heads=6, **kwargs)
@@ -1175,7 +1175,7 @@ def vit_small_patch8_224_dino_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_dino_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_dino_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) /w DINO pretrained weights (no head) - https://arxiv.org/abs/2104.14294
     """
     model_kwargs = dict(patch_size=16, embed_dim=768, depth=12, num_heads=12, **kwargs)
@@ -1184,7 +1184,7 @@ def vit_base_patch16_224_dino_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch8_224_dino_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch8_224_dino_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/8) w/ DINO pretrained weights (no head) - https://arxiv.org/abs/2104.14294
     """
     model_kwargs = dict(patch_size=8, embed_dim=768, depth=12, num_heads=12, **kwargs)
@@ -1193,7 +1193,7 @@ def vit_base_patch8_224_dino_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_miil_in21k_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_miil_in21k_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     Weights taken from: https://github.com/Alibaba-MIIL/ImageNet21K
     """
@@ -1203,7 +1203,7 @@ def vit_base_patch16_224_miil_in21k_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_224_miil_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_224_miil_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     Weights taken from: https://github.com/Alibaba-MIIL/ImageNet21K
     """
@@ -1215,7 +1215,7 @@ def vit_base_patch16_224_miil_dual_prompt(pretrained=False, **kwargs):
 # Experimental models below
 
 @register_model
-def vit_base_patch32_plus_256_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch32_plus_256_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/32+)
     """
     model_kwargs = dict(patch_size=32, embed_dim=896, depth=12, num_heads=14, init_values=1e-5, **kwargs)
@@ -1224,7 +1224,7 @@ def vit_base_patch32_plus_256_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_plus_240_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_plus_240_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16+)
     """
     model_kwargs = dict(patch_size=16, embed_dim=896, depth=12, num_heads=14, init_values=1e-5, **kwargs)
@@ -1233,7 +1233,7 @@ def vit_base_patch16_plus_240_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_rpn_224_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_rpn_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base (ViT-B/16) w/ residual post-norm
     """
     model_kwargs = dict(
@@ -1244,7 +1244,7 @@ def vit_base_patch16_rpn_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_36x1_224_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_36x1_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base w/ LayerScale + 36 x 1 (36 block serial) config. Experimental, may remove.
     Based on `Three things everyone should know about Vision Transformers` - https://arxiv.org/abs/2203.09795
     Paper focuses on 24x2 + 48x1 for 'Small' width but those are extremely slow.
@@ -1255,7 +1255,7 @@ def vit_small_patch16_36x1_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_small_patch16_18x2_224_dual_prompt(pretrained=False, **kwargs):
+def vit_small_patch16_18x2_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Small w/ LayerScale + 18 x 2 (36 block parallel) config. Experimental, may remove.
     Based on `Three things everyone should know about Vision Transformers` - https://arxiv.org/abs/2203.09795
     Paper focuses on 24x2 + 48x1 for 'Small' width but those are extremely slow.
@@ -1267,7 +1267,7 @@ def vit_small_patch16_18x2_224_dual_prompt(pretrained=False, **kwargs):
 
 
 @register_model
-def vit_base_patch16_18x2_224_dual_prompt(pretrained=False, **kwargs):
+def vit_base_patch16_18x2_224_dualprompt(pretrained=False, **kwargs):
     """ ViT-Base w/ LayerScale + 18 x 2 (36 block parallel) config. Experimental, may remove.
     Based on `Three things everyone should know about Vision Transformers` - https://arxiv.org/abs/2203.09795
     """

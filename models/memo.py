@@ -14,8 +14,7 @@ from utils.toolkit import count_parameters, target2onehot, tensor2numpy
 num_workers=8
 EPSILON = 1e-8
 
-class MEMO(BaseLearner):
-
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self.args = args
@@ -255,7 +254,7 @@ class MEMO(BaseLearner):
         _checkpoint_cpu.cpu()
         save_dict = {
             "tasks": self._cur_task,
-            "convnet": _checkpoint_cpu.convnet.state_dict(),
+            "backbone": _checkpoint_cpu.backbone.state_dict(),
             "fc":_checkpoint_cpu.fc.state_dict(),
             "test_acc": test_acc
         }

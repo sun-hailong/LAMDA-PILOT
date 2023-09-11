@@ -15,10 +15,10 @@ from timm.scheduler import create_scheduler
 # fully finetune the model at first session, and then conduct simplecil.
 num_workers = 8
 
-class Adam_finetune(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
-        if 'resnet' in args['convnet_type']:
+        if 'resnet' in args['backbone_type']:
             self._network = SimpleCosineIncrementalNet(args, True)
             self. batch_size=128
             self.init_lr=args["init_lr"] if args["init_lr"] is not None else  0.01

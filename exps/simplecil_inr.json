@@ -5,10 +5,10 @@
     "memory_per_class": 0,
     "fixed_memory": false,
     "shuffle": true,
-    "init_cls": 10,
-    "increment": 10,
+    "init_cls": 20,
+    "increment": 20,
     "model_name": "simplecil",
-    "convnet_type": "pretrained_vit_b16_224",
+    "backbone_type": "pretrained_vit_b16_224",
     "device": ["0"],
     "seed": [1993],
     

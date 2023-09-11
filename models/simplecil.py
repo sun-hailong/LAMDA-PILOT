@@ -15,7 +15,7 @@ from utils.toolkit import target2onehot, tensor2numpy
 num_workers = 8
 batch_size = 128
 
-class SimpleCIL(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = SimpleVitNet(args, True)
@@ -33,7 +33,7 @@ class SimpleCIL(BaseLearner):
                 (_,data, label) = batch
                 data = data.to(self._device)
                 label = label.to(self._device)
-                embedding = model.convnet(data)
+                embedding = model.backbone(data)
                 embedding_list.append(embedding.cpu())
                 label_list.append(label.cpu())
         embedding_list = torch.cat(embedding_list, dim=0)

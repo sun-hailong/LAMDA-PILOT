@@ -15,13 +15,12 @@ from utils.toolkit import target2onehot, tensor2numpy
 
 num_workers = 8
 
-
-class Adam_ssf(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
-        if 'ssf' not in args["convnet_type"]:
+        if 'ssf' not in args["backbone_type"]:
             raise NotImplementedError('Scale requires Scale backbone')
-        if 'resnet' in args['convnet_type']:
+        if 'resnet' in args['backbone_type']:
             self._network = SimpleCosineIncrementalNet(args, True)
             self. batch_size=128
             self.init_lr=args["init_lr"] if args["init_lr"] is not None else  0.01
@@ -93,15 +92,15 @@ class Adam_ssf(BaseLearner):
         
         if self._cur_task == 0:
             # Freeze the parameters for ViT.
-            if 'vit' in self.args['convnet_type']:
-                if isinstance(self._network.convnet, nn.Module):
-                    for name, param in self._network.convnet.named_parameters():
+            if 'vit' in self.args['backbone_type']:
+                if isinstance(self._network.backbone, nn.Module):
+                    for name, param in self._network.backbone.named_parameters():
                         if "head." not in name and "ssf_scale" not in name and "ssf_shift_" not in name: 
                             param.requires_grad = False
                     print('freezing parameters finished!') 
             else:
-                if isinstance(self._network.convnet, nn.Module):
-                    for name, param in self._network.convnet.named_parameters():
+                if isinstance(self._network.backbone, nn.Module):
+                    for name, param in self._network.backbone.named_parameters():
                         if "ssf_scale" not in name and "ssf_shift_" not in name: 
                             param.requires_grad = False
                         if param.requires_grad == True:

@@ -15,7 +15,7 @@ EPSILON = 1e-8
 num_workers = 8
 
 
-class DER(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = DERNet(args, True)
@@ -36,7 +36,7 @@ class DER(BaseLearner):
 
         if self._cur_task > 0:
             for i in range(self._cur_task):
-                for p in self._network.convnets[i].parameters():
+                for p in self._network.backbones[i].parameters():
                     p.requires_grad = False
 
         logging.info("All params: {}".format(count_parameters(self._network)))
@@ -73,10 +73,10 @@ class DER(BaseLearner):
             self._network_module_ptr = self._network.module
         else:
             self._network_module_ptr = self._network
-        self._network_module_ptr.convnets[-1].train()
+        self._network_module_ptr.backbones[-1].train()
         if self._cur_task >= 1:
             for i in range(self._cur_task):
-                self._network_module_ptr.convnets[i].eval()
+                self._network_module_ptr.backbones[i].eval()
 
     def _train(self, train_loader, test_loader):
         self._network.to(self._device)

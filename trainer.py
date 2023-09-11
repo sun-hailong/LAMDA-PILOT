@@ -33,7 +33,7 @@ def _train(args):
         args["increment"],
         args["prefix"],
         args["seed"],
-        args["convnet_type"],
+        args["backbone_type"],
     )
     logging.basicConfig(
         level=logging.INFO,

@@ -15,7 +15,7 @@ from utils.toolkit import count_parameters, target2onehot, tensor2numpy
 EPSILON = 1e-8
 
 
-class FOSTER(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self.args = args
@@ -49,7 +49,7 @@ class FOSTER(BaseLearner):
         )
 
         if self._cur_task > 0:
-            for p in self._network.convnets[0].parameters():
+            for p in self._network.backbones[0].parameters():
                 p.requires_grad = False
             for p in self._network.oldfc.parameters():
                 p.requires_grad = False
@@ -91,9 +91,9 @@ class FOSTER(BaseLearner):
 
     def train(self):
         self._network_module_ptr.train()
-        self._network_module_ptr.convnets[-1].train()
+        self._network_module_ptr.backbones[-1].train()
         if self._cur_task >= 1:
-            self._network_module_ptr.convnets[0].eval()
+            self._network_module_ptr.backbones[0].eval()
 
     def _train(self, train_loader, test_loader):
         self._network.to(self._device)
@@ -295,8 +295,8 @@ class FOSTER(BaseLearner):
         else:
             self._snet_module_ptr = self._snet
         self._snet.to(self._device)
-        self._snet_module_ptr.convnets[0].load_state_dict(
-            self._network_module_ptr.convnets[0].state_dict()
+        self._snet_module_ptr.backbones[0].load_state_dict(
+            self._network_module_ptr.backbones[0].state_dict()
         )
         self._snet_module_ptr.copy_fc(self._network_module_ptr.oldfc)
         optimizer = optim.SGD(

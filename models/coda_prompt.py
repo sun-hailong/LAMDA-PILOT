@@ -15,7 +15,7 @@ from utils.toolkit import tensor2numpy
 # tune the model at first session with vpt, and then conduct simple shot.
 num_workers = 8
 
-class Coda_prompt(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
     

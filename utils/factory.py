@@ -1,47 +1,34 @@
-from models.simplecil import SimpleCIL
-from models.adam_adapter import Adam_adapter
-from models.adam_finetune import Adam_finetune
-from models.adam_ssf import Adam_ssf
-from models.adam_vpt import Adam_vpt
-from models.l2p import L2P
-from models.dual_prompt import Dual_prompt
-from models.coda_prompt import Coda_prompt
-from models.finetune import Finetune
-from models.icarl import iCaRL
-from models.der import DER
-from models.coil import COIL
-from models.foster import FOSTER
-from models.memo import MEMO
-
 def get_model(model_name, args):
     name = model_name.lower()
     if name == "simplecil":
-        return SimpleCIL(args)
+        from models.simplecil import Learner
     elif name == "adam_finetune":
-        return Adam_finetune(args)
+        from models.adam_finetune import Learner
     elif name == "adam_ssf":
-        return Adam_ssf(args)
+        from models.adam_ssf import Learner
     elif name == "adam_vpt":
-        return Adam_vpt(args) 
+        from models.adam_vpt import Learner 
     elif name == "adam_adapter":
-        return Adam_adapter(args)
+        from models.adam_adapter import Learner
     elif name == "l2p":
-        return L2P(args)
-    elif name == "dual_prompt":
-        return Dual_prompt(args)
+        from models.l2p import Learner
+    elif name == "dualprompt":
+        from models.dualprompt import Learner
     elif name == "coda_prompt":
-        return Coda_prompt(args)
+        from models.coda_prompt import Learner
     elif name == "finetune":
-        return Finetune(args)
+        from models.finetune import Learner
     elif name == "icarl":
-        return iCaRL(args)
+        from models.icarl import Learner
     elif name == "der":
-        return DER(args)
+        from models.der import Learner
     elif name == "coil":
-        return COIL(args)
+        from models.coil import Learner
     elif name == "foster":
-        return FOSTER(args)
+        from models.foster import Learner
     elif name == "memo":
-        return MEMO(args)
+        from models.memo import Learner
     else:
         assert 0
+    
+    return Learner(args)

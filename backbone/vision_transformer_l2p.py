@@ -40,7 +40,7 @@ from timm.models.helpers import build_model_with_cfg, resolve_pretrained_cfg, na
 from timm.models.layers import PatchEmbed, Mlp, DropPath, trunc_normal_, lecun_normal_
 from timm.models.registry import register_model
 
-from convs.prompt import Prompt
+from backbone.prompt import Prompt
 
 _logger = logging.getLogger(__name__)
 

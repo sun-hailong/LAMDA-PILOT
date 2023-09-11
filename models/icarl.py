@@ -14,7 +14,7 @@ from utils.toolkit import target2onehot, tensor2numpy
 EPSILON = 1e-8
 num_workers = 8
 
-class iCaRL(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = IncrementalNet(args, True)

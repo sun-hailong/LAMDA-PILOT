@@ -13,7 +13,7 @@ from utils.toolkit import target2onehot, tensor2numpy
 
 num_workers = 8
 
-class Finetune(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = IncrementalNet(args, True)

@@ -14,14 +14,14 @@ from utils.toolkit import target2onehot, tensor2numpy
 # tune the model at first session with vpt, and then conduct simple shot.
 num_workers = 8
 
-class Adam_vpt(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
 
-        if 'vpt' not in args["convnet_type"]:
+        if 'vpt' not in args["backbone_type"]:
             raise NotImplementedError('VPT requires VPT backbone')
     
-        if 'resnet' in args['convnet_type']:
+        if 'resnet' in args['backbone_type']:
             self._network = SimpleCosineIncrementalNet(args, True)
             self. batch_size=128
             self.init_lr=args["init_lr"] if args["init_lr"] is not None else  0.01

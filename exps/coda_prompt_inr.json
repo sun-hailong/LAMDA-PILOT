@@ -5,10 +5,10 @@
     "memory_per_class": 0,
     "fixed_memory": false,
     "shuffle": false,
-    "init_cls": 10,
-    "increment": 10,
+    "init_cls": 20,
+    "increment": 20,
     "model_name": "coda_prompt",
-    "convnet_type": "vit_base_patch16_224_coda_prompt",
+    "backbone_type": "vit_base_patch16_224_coda_prompt",
     "device": ["0"],
     "seed": [0],
     

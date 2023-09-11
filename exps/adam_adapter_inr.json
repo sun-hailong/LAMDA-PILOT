@@ -8,7 +8,7 @@
     "init_cls": 20,
     "increment": 20,
     "model_name": "adam_adapter",
-    "convnet_type": "pretrained_vit_b16_224_adapter",
+    "backbone_type": "pretrained_vit_b16_224_adapter",
     "device": ["0"],
     "seed": [1993],
     

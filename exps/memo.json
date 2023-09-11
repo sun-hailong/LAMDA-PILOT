@@ -8,7 +8,7 @@
     "init_cls": 10,
     "increment": 10,
     "model_name": "memo",
-    "convnet_type": "vit_base_patch16_224_memo",
+    "backbone_type": "vit_base_patch16_224_memo",
     "train_base": false,
     "train_adaptive": false,
     "debug": false,

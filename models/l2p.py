@@ -13,7 +13,7 @@ from utils.toolkit import tensor2numpy
 # tune the model at first session with vpt, and then conduct simple shot.
 num_workers = 8
 
-class L2P(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
     
@@ -27,22 +27,22 @@ class L2P(BaseLearner):
 
         # Freeze the parameters for ViT.
         if self.args["freeze"]:
-            for p in self._network.original_convnet.parameters():
+            for p in self._network.original_backbone.parameters():
                 p.requires_grad = False
         
             # freeze args.freeze[blocks, patch_embed, cls_token] parameters
-            for n, p in self._network.convnet.named_parameters():
+            for n, p in self._network.backbone.named_parameters():
                 if n.startswith(tuple(self.args["freeze"])):
                     p.requires_grad = False
         
-        total_params = sum(p.numel() for p in self._network.convnet.parameters())
+        total_params = sum(p.numel() for p in self._network.backbone.parameters())
         logging.info(f'{total_params:,} model total parameters.')
-        total_trainable_params = sum(p.numel() for p in self._network.convnet.parameters() if p.requires_grad)
+        total_trainable_params = sum(p.numel() for p in self._network.backbone.parameters() if p.requires_grad)
         logging.info(f'{total_trainable_params:,} model training parameters.')
 
         # if some parameters are trainable, print the key name and corresponding parameter number
         if total_params != total_trainable_params:
-            for name, param in self._network.convnet.named_parameters():
+            for name, param in self._network.backbone.named_parameters():
                 if param.requires_grad:
                     logging.info("{}: {}".format(name, param.numel()))
 
@@ -119,7 +119,7 @@ class L2P(BaseLearner):
 
     def _init_prompt(self, optimizer):
         args = self.args
-        model = self._network.convnet
+        model = self._network.backbone
         task_id = self._cur_task
 
         # Transfer previous learned prompt params to the new prompt
@@ -163,8 +163,8 @@ class L2P(BaseLearner):
     def _init_train(self, train_loader, test_loader, optimizer, scheduler):
         prog_bar = tqdm(range(self.args['tuned_epoch']))
         for _, epoch in enumerate(prog_bar):
-            self._network.convnet.train()
-            self._network.original_convnet.eval()
+            self._network.backbone.train()
+            self._network.original_backbone.eval()
 
             losses = 0.0
             correct, total = 0, 0

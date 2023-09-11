@@ -8,8 +8,8 @@
     "init_cls": 10,
     "increment": 10,
     "model_name": "l2p",
-    "convnet_type": "vit_base_patch16_224_l2p",
-    "get_original_convnet": true,
+    "backbone_type": "vit_base_patch16_224_l2p",
+    "get_original_backbone": true,
     "device": ["0"],
     "seed": [1993],
     

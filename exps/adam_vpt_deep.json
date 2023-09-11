@@ -8,7 +8,7 @@
     "init_cls": 10,
     "increment": 10,
     "model_name": "adam_vpt",
-    "convnet_type": "pretrained_vit_b16_224_vpt",
+    "backbone_type": "pretrained_vit_b16_224_vpt",
     "device": ["0"],
     "seed": [1993],
     

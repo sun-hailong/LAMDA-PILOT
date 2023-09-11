@@ -18,7 +18,7 @@ import copy
 
 EPSILON = 1e-8
 
-class COIL(BaseLearner):
+class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = SimpleCosineIncrementalNet(args, True)
