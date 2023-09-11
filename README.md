@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-  <a href="#🎉 introduction">🎉Introduction</a> •
-  <a href="#🌟 methods-reproduced">🌟Methods Reproduced</a> •
-  <a href="#📝 reproduced-results">📝Reproduced Results</a> <br />
-  <a href="#☄️ how-to-use">☄️How to Use</a> •
-  <a href="#👨‍🏫 acknowledgments">👨‍🏫Acknowledgments</a> •
-  <a href="#🤗 contact">🤗Contact</a>
+  <a href="#-introduction">🎉Introduction</a> •
+  <a href="#-methods-reproduced">🌟Methods Reproduced</a> •
+  <a href="#-reproduced-results">📝Reproduced Results</a> <br />
+  <a href="#%EF%B8%8F-how-to-use">☄️How to Use</a> •
+  <a href="#-acknowledgments">👨‍🏫Acknowledgments</a> •
+  <a href="#-contact">🤗Contact</a>
 </p>
 
 ---
@@ -41,7 +41,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 
 > Intended authors are welcome to contact us to reproduce your methods in our repo. Feel free to merge your algorithm into PILOT if you are using our codebase!
 
-## 📝 Reproduced-Results
+## 📝 Reproduced Results
 
 #### CIFAR-100
 
@@ -57,7 +57,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
    
 > For exemplar parameters, Coil, DER, iCaRL, MEMO, and FOSTER retain the "memory_size" of 2000 and set the "fix memory" option to false for CIFAR100, while retaining the "memory_size" of 4000 and setting "fix memory" option to true for ImageNet-R. On the contrary, other models are exemplar-free.
 
-## ☄️ how-to-use
+## ☄️ how to use
 
 ### 🕹️ Clone
 
