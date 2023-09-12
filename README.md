@@ -54,8 +54,8 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 <div align="center">
 <img src="./resources/imagenetRb0inc20.jpg" width="600px">
 </div>
-   
-> For exemplar parameters, Coil, DER, iCaRL, MEMO, and FOSTER retain the "memory_size" of 2000 and set the "fix memory" option to false for CIFAR100, while retaining the "memory_size" of 4000 and setting "fix memory" option to true for ImageNet-R. On the contrary, other models are exemplar-free.
+
+> For exemplar parameters, Coil, DER, iCaRL, MEMO, and FOSTER set the `fixed_memory` option to false and retain the `memory_size` of 2000 for CIFAR100, while setting `fixed_memory` option to true and retaining the `memory_per_class` of 20 for ImageNet-R. On the contrary, other models are exemplar-free.
 
 ## ☄️ how to use
 
@@ -97,9 +97,9 @@ cd LAMDA-PILOT
    - **increment**: The number of classes in each incremental stage $i$, $i$ > 1. By default, the number of classes is equal across all incremental stages.
    - **backbone_type**: The backbone network of the incremental model. It can be selected from a variety of pre-trained models available in the Timm library, such as **ViT-B/16-IN1K** and **ViT-B/16-IN21K**. Both are pre-trained on ImageNet21K, while the former is additionally fine-tuned on ImageNet1K.
    - **seed**: The random seed is utilized for shuffling the class order. It is set to 1993 by default, following the benchmark setting iCaRL.
-   - **fixed memory**: a Boolean parameter. When set to true, the model will maintain a consistent amount of memory per class. Alternatively, when set to false, the model will preserve dynamic memory allocation per class.
-   - **memory_size**: The total number of exemplars in the incremental learning process. **L2P, DualPrompt, SimpleCIL, ADAM, and Coda-Prompt do not require exemplars.** Therefore, parameters related to the exemplar are not utilized.
-   - **memory_per_class**: If `fixed memory` is set to true, the model will preserve a fixed number of `memory_per_class` exemplars for each class. In contrast, if it is set to false, assuming there are $K$ classes at the current stage, the model will preserve $\left[\frac{{memory-size}}{K}\right]$ exemplar for each class. 
+   - **fixed_memory**: a Boolean parameter. When set to true, the model will maintain a fixed amount of memory per class. Alternatively, when set to false, the model will preserve dynamic memory allocation per class.
+   - **memory_size**: The total number of exemplars in the incremental learning process. If `fixed_memory` is set to false, assuming there are $K$ classes at the current stage, the model will preserve $\left[\frac{{memory-size}}{K}\right]$ exemplars for each class. **L2P, DualPrompt, SimpleCIL, ADAM, and Coda-Prompt do not require exemplars.** Therefore, parameters related to the exemplar are not utilized.
+   - **memory_per_class**: If `fixed memory` is set to true, the model will preserve a fixed number of `memory_per_class` exemplars for each class.
 
 ### 🔎 Datasets
 
