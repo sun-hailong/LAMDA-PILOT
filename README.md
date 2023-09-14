@@ -23,7 +23,7 @@
 
 ## 🎉 Introduction
 
-Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, DER, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
+Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/2309.07117">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, DER, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
 
 ## 🌟 Methods Reproduced
 
