@@ -14,7 +14,7 @@ class CodaPrompt(nn.Module):
 
         # e prompt init
         for e in self.e_layers:
-            # for model saving/loading simplicity, we init the full paramaters here
+            # for model saving/loading simplicity, we init the full parameters here
             # however, please note that we reinit the new components at each task
             # in the "spirit of continual learning", as we don't know how many tasks
             # we will encounter at the start of the task sequence
