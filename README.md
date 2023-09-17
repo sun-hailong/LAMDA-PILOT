@@ -25,6 +25,15 @@
 
 Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/2309.07117">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, DER, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
 
+**If you use any content of this repo for your work, please cite the following bib entry:**
+
+    @article{sun2023pilot,
+      title={PILOT: A Pre-Trained Model-Based Continual Learning Toolbox},
+      author={Sun, Hai-Long and Zhou, Da-Wei and Ye, Han-Jia and Zhan, De-Chuan},
+      journal={arXiv preprint arXiv:2309.07117},
+      year={2023}
+    }
+
 ## 🌟 Methods Reproduced
 
 - `FineTune`: Baseline method which simply updates parameters on new tasks.
