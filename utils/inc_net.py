@@ -122,7 +122,7 @@ def get_backbone(args, pretrained=False):
     # dualprompt
     elif '_dualprompt' in name:
         if args["model_name"] == "dualprompt":
-            from backbone import vision_transformer_dualprompt
+            from backbone import vision_transformer_dual_prompt
             model = timm.create_model(
                 args["backbone_type"],
                 pretrained=args["pretrained"],
