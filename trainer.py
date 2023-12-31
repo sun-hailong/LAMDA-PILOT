@@ -6,6 +6,7 @@ from utils import factory
 from utils.data_manager import DataManager
 from utils.toolkit import count_parameters
 import os
+import numpy as np
 
 
 def train(args):
@@ -86,7 +87,6 @@ def _train(args):
             nme_keys_sorted = sorted(nme_keys)
             nme_values = [nme_accy["grouped"][key] for key in nme_keys_sorted]
             nme_matrix.append(nme_values)
-            print(cnn_matrix)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
             cnn_curve["top5"].append(cnn_accy["top5"])
@@ -112,7 +112,6 @@ def _train(args):
             cnn_keys_sorted = sorted(cnn_keys)
             cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys_sorted]
             cnn_matrix.append(cnn_values)
-            print(cnn_matrix)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
             cnn_curve["top5"].append(cnn_accy["top5"])
@@ -123,7 +122,27 @@ def _train(args):
             print('Average Accuracy (CNN):', sum(cnn_curve["top1"])/len(cnn_curve["top1"]))
             logging.info("Average Accuracy (CNN): {} \n".format(sum(cnn_curve["top1"])/len(cnn_curve["top1"])))
 
-    
+
+    if len(cnn_matrix)>0:
+        np_acctable = np.zeros([task + 1, task + 1])
+        for idxx, line in enumerate(cnn_matrix):
+            idxy = len(line)
+            np_acctable[idxx, :idxy] = np.array(line)
+        np_acctable = np_acctable.T
+        forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+        print('Forgetting (CNN):', forgetting)
+        logging.info('Forgetting (CNN):', forgetting)
+    if len(nme_matrix)>0:
+        np_acctable = np.zeros([task + 1, task + 1])
+        for idxx, line in enumerate(nme_matrix):
+            idxy = len(line)
+            np_acctable[idxx, :idxy] = np.array(line)
+        np_acctable = np_acctable.T
+        forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+        print('Forgetting (NME):', forgetting)
+        logging.info('Forgetting (NME):', forgetting)
+
+
 def _set_device(args):
     device_type = args["device"]
     gpus = []
