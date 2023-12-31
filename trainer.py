@@ -62,6 +62,8 @@ def _train(args):
     model = factory.get_model(args["model_name"], args)
 
     cnn_curve, nme_curve = {"top1": [], "top5": []}, {"top1": [], "top5": []}
+    cnn_matrix, nme_matrix = [], []
+
     for task in range(data_manager.nb_tasks):
         logging.info("All params: {}".format(count_parameters(model._network)))
         logging.info(
@@ -74,6 +76,17 @@ def _train(args):
         if nme_accy is not None:
             logging.info("CNN: {}".format(cnn_accy["grouped"]))
             logging.info("NME: {}".format(nme_accy["grouped"]))
+
+            cnn_keys = [key for key in cnn_accy["grouped"].keys() if '-' in key]
+            cnn_keys_sorted = sorted(cnn_keys)
+            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys_sorted]
+            cnn_matrix.append(cnn_values)
+
+            nme_keys = [key for key in nme_accy["grouped"].keys() if '-' in key]
+            nme_keys_sorted = sorted(nme_keys)
+            nme_values = [nme_accy["grouped"][key] for key in nme_keys_sorted]
+            nme_matrix.append(nme_values)
+            print(cnn_matrix)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
             cnn_curve["top5"].append(cnn_accy["top5"])
@@ -94,6 +107,12 @@ def _train(args):
         else:
             logging.info("No NME accuracy.")
             logging.info("CNN: {}".format(cnn_accy["grouped"]))
+
+            cnn_keys = [key for key in cnn_accy["grouped"].keys() if '-' in key]
+            cnn_keys_sorted = sorted(cnn_keys)
+            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys_sorted]
+            cnn_matrix.append(cnn_values)
+            print(cnn_matrix)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
             cnn_curve["top5"].append(cnn_accy["top5"])
