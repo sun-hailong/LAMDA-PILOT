@@ -130,6 +130,8 @@ def _train(args):
             np_acctable[idxx, :idxy] = np.array(line)
         np_acctable = np_acctable.T
         forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+        print('Accuracy Matrix (CNN):')
+        print(np_acctable)
         print('Forgetting (CNN):', forgetting)
         logging.info('Forgetting (CNN):', forgetting)
     if len(nme_matrix)>0:
@@ -139,6 +141,8 @@ def _train(args):
             np_acctable[idxx, :idxy] = np.array(line)
         np_acctable = np_acctable.T
         forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+        print('Accuracy Matrix (NME):')
+        print(np_acctable)
         print('Forgetting (NME):', forgetting)
         logging.info('Forgetting (NME):', forgetting)
 
