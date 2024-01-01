@@ -133,7 +133,7 @@ def _train(args):
         print('Accuracy Matrix (CNN):')
         print(np_acctable)
         print('Forgetting (CNN):', forgetting)
-        logging.info('Forgetting (CNN):', forgetting)
+        logging.info('Forgetting (CNN): {}'.format(forgetting))
     if len(nme_matrix)>0:
         np_acctable = np.zeros([task + 1, task + 1])
         for idxx, line in enumerate(nme_matrix):
