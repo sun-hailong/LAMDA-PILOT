@@ -78,14 +78,12 @@ def _train(args):
             logging.info("CNN: {}".format(cnn_accy["grouped"]))
             logging.info("NME: {}".format(nme_accy["grouped"]))
 
-            cnn_keys = [key for key in cnn_accy["grouped"].keys() if '-' in key]
-            cnn_keys_sorted = sorted(cnn_keys)
-            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys_sorted]
+            cnn_keys = [key for key in cnn_accy["grouped"].keys() if '-' in key]    
+            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys]
             cnn_matrix.append(cnn_values)
 
             nme_keys = [key for key in nme_accy["grouped"].keys() if '-' in key]
-            nme_keys_sorted = sorted(nme_keys)
-            nme_values = [nme_accy["grouped"][key] for key in nme_keys_sorted]
+            nme_values = [nme_accy["grouped"][key] for key in nme_keys]
             nme_matrix.append(nme_values)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
@@ -109,8 +107,7 @@ def _train(args):
             logging.info("CNN: {}".format(cnn_accy["grouped"]))
 
             cnn_keys = [key for key in cnn_accy["grouped"].keys() if '-' in key]
-            cnn_keys_sorted = sorted(cnn_keys)
-            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys_sorted]
+            cnn_values = [cnn_accy["grouped"][key] for key in cnn_keys]
             cnn_matrix.append(cnn_values)
 
             cnn_curve["top1"].append(cnn_accy["top1"])
