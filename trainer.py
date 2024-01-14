@@ -14,6 +14,17 @@ def train(args):
     seed_list = copy.deepcopy(args["seed"])
     device = copy.deepcopy(args["device"])
 
+    #RanPAC is implemented in this repository by switches inside simplecil or adam_<petl> models
+    if args['model_name']=='ranpac-phase2':
+        args['model_name']='simplecil' #use_rp=True in the json args file is activated inside the simplecil model code
+    elif 'ranpac' in args['model_name']:
+        args['model_name']=args['model_name'].replace('ranpac','adam')
+        #use_rp=True in the json args file is activated inside the adam_ model code
+    else:
+        args['use_RP']=False
+        args['M']=-1
+
+
     for seed in seed_list:
         args["seed"] = seed
         args["device"] = device

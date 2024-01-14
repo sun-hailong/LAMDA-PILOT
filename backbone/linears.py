@@ -45,6 +45,7 @@ class CosineLinear(nn.Module):
         else:
             self.register_parameter('sigma', None)
         self.reset_parameters()
+        self.use_RP=False
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
@@ -53,7 +54,14 @@ class CosineLinear(nn.Module):
             self.sigma.data.fill_(1)
 
     def forward(self, input):
-        out = F.linear(F.normalize(input, p=2, dim=1), F.normalize(self.weight, p=2, dim=1))
+        if self.use_RP: 
+            if self.W_rand is not None:
+                final_layer_input = torch.nn.functional.relu(input @ self.W_rand)
+            else:
+                final_layer_input=input
+            out = F.linear(final_layer_input,self.weight)
+        else:
+            out = F.linear(F.normalize(input, p=2, dim=1), F.normalize(self.weight, p=2, dim=1))
 
         if self.to_reduce:
             # Reduce_proxy

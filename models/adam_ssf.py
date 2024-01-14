@@ -1,3 +1,4 @@
+import copy
 import logging
 import numpy as np
 import torch
@@ -39,6 +40,14 @@ class Learner(BaseLearner):
     def replace_fc(self,trainloader, model, args):
         # replace fc.weight with the embedding average of train data
         model = model.eval()
+        if self.args['use_RP']:
+            #these lines are needed because the CosineLinear head gets deleted between streams and replaced by one with more classes (for CIL)
+            self._network.fc.use_RP=True
+            if self.args['M']>0:
+                self._network.fc.W_rand=self.W_rand
+            else:
+                self._network.fc.W_rand=None
+
         embedding_list = []
         label_list = []
         with torch.no_grad():
@@ -46,26 +55,58 @@ class Learner(BaseLearner):
                 (_,data,label)=batch
                 data=data.to(self._device)
                 label=label.to(self._device)
-                embedding = model(data)['features']
+                #embedding = model(data)['features']
+                embedding = model.backbone(data)
                 embedding_list.append(embedding.cpu())
                 label_list.append(label.cpu())
         embedding_list = torch.cat(embedding_list, dim=0)
         label_list = torch.cat(label_list, dim=0)
 
-        class_list=np.unique(self.train_dataset.labels)
-        proto_list = []
-        for class_index in class_list:
-            # print('Replacing...',class_index)
-            data_index=(label_list==class_index).nonzero().squeeze(-1)
-            embedding=embedding_list[data_index]
-            proto=embedding.mean(0)
-            self._network.fc.weight.data[class_index]=proto
-        return model
+        if self.args['use_RP']:
+            Y=target2onehot(label_list,self.total_classnum)
+            if self.args['M']>0:
+                Features_h=torch.nn.functional.relu(embedding_list@ self._network.fc.W_rand.cpu())
+            else:
+                Features_h=embedding_list
+            self.Q=self.Q+Features_h.T @ Y 
+            self.G=self.G+Features_h.T @ Features_h
+            ridge=self.optimise_ridge_parameter(Features_h,Y)
+            Wo=torch.linalg.solve(self.G+ridge*torch.eye(self.G.size(dim=0)),self.Q).T #better nmerical stability than .inv
+            self._network.fc.weight.data=Wo[0:self._network.fc.weight.shape[0],:].to(device='cuda')
+        else:
+            class_list=np.unique(self.train_dataset.labels)
+            proto_list = []
+            for class_index in class_list:
+                # print('Replacing...',class_index)
+                data_index=(label_list==class_index).nonzero().squeeze(-1)
+                embedding=embedding_list[data_index]
+                proto=embedding.mean(0)
+                self._network.fc.weight.data[class_index]=proto
+            return model
 
+    def optimise_ridge_parameter(self,Features,Y):
+        ridges=10.0**np.arange(-8,9)
+        num_val_samples=int(Features.shape[0]*0.8)
+        losses=[]
+        Q_val=Features[0:num_val_samples,:].T @ Y[0:num_val_samples,:]
+        G_val=Features[0:num_val_samples,:].T @ Features[0:num_val_samples,:]
+        for ridge in ridges:
+            Wo=torch.linalg.solve(G_val+ridge*torch.eye(G_val.size(dim=0)),Q_val).T #better nmerical stability than .inv
+            Y_train_pred=Features[num_val_samples::,:]@Wo.T
+            losses.append(F.mse_loss(Y_train_pred,Y[num_val_samples::,:]))
+        ridge=ridges[np.argmin(np.array(losses))]
+        logging.info("Optimal lambda: "+str(ridge))
+        return ridge
 
     def incremental_train(self, data_manager):
         self._cur_task += 1
         self._total_classes = self._known_classes + data_manager.get_task_size(self._cur_task)
+        self.total_classnum = data_manager.nb_classes
+        if self.args['use_RP']:
+            #temporarily remove RP weights due to how update_fc works
+            #the information we need to create the output weights from past layers is stored in self.G and self.Q
+            del self._network.fc
+            self._network.fc=None
         self._network.update_fc(self._total_classes)
         logging.info("Learning on {}-{}".format(self._known_classes, self._total_classes))
 
@@ -124,12 +165,30 @@ class Learner(BaseLearner):
                 optimizer=optim.AdamW(self._network.parameters(), lr=self.init_lr, weight_decay=self.weight_decay)
             scheduler=optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args['tuned_epoch'], eta_min=self.min_lr)
             self._init_train(train_loader, test_loader, optimizer, scheduler)
-            self.construct_dual_branch_network()
+            if self._cur_task == 0 and self.args['use_RP']:
+                self.setup_RP()
+            else:
+                self.construct_dual_branch_network()
         else:
             pass
         
         self.replace_fc(train_loader_for_protonet, self._network, None)
-            
+ 
+    def setup_RP(self):
+        self._network.fc.use_RP=True
+        if self.args['M']>0:
+            #RP with M > 0
+            M=self.args['M']
+            self._network.fc.weight = nn.Parameter(torch.Tensor(self._network.fc.out_features, M).to(device='cuda')) #num classes in task x M
+            self._network._feature_dim=M
+            self._network.fc.reset_parameters()
+            self._network.fc.W_rand=torch.randn(self._network.fc.in_features,M).to(device='cuda')
+            self.W_rand=copy.deepcopy(self._network.fc.W_rand) #make a copy that gets passed each time the head is replaced
+        else:
+            #no RP, only decorrelation
+            M=self._network.fc.in_features #this M is L in the paper
+        self.Q=torch.zeros(M,self.total_classnum)
+        self.G=torch.zeros(M,M)              
 
     def construct_dual_branch_network(self):
         network = MultiBranchCosineIncrementalNet(self.args, True)

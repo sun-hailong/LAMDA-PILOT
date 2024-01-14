@@ -1,0 +1,27 @@
+{
+    "prefix": " ",
+    "dataset": "imagenetr",
+    "memory_size": 0,
+    "memory_per_class": 0,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 20,
+    "increment": 20,
+    "model_name": "ranpac-phase2",
+    "backbone_type": "pretrained_vit_b16_224",
+    "device": ["0"],
+    "seed": [1993],
+    
+    "tuned_epoch": 0,
+    "init_lr": 0.01,
+    "batch_size": 256,
+    "weight_decay": 0.05,
+    "min_lr": 1e-8,
+    "optimizer": "sgd",
+    "vpt_type": "shallow",
+    "prompt_token_num": 3,
+
+    "use_RP": true,
+    "M": 10000
+}
+
