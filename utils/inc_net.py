@@ -27,7 +27,7 @@ def get_backbone(args, pretrained=False):
             return _basenet, _adaptive_net
     # SSF 
     elif '_ssf' in name:
-        if args["model_name"] == "adam_ssf":
+        if args["model_name"] == "adam_ssf"  or args["model_name"] == "ranpac":
             from backbone import vision_transformer_ssf
             if name == "pretrained_vit_b16_224_ssf":
                 model = timm.create_model("vit_base_patch16_224_ssf", pretrained=True, num_classes=0)
@@ -41,7 +41,7 @@ def get_backbone(args, pretrained=False):
     
     # VPT
     elif '_vpt' in name:
-        if args["model_name"] == "adam_vpt":
+        if args["model_name"] == "adam_vpt"  or args["model_name"] == "ranpac":
             from backbone.vpt import build_promptmodel
             if name == "pretrained_vit_b16_224_vpt":
                 basicmodelname = "vit_base_patch16_224" 
@@ -64,7 +64,7 @@ def get_backbone(args, pretrained=False):
 
     elif '_adapter' in name:
         ffn_num = args["ffn_num"]
-        if args["model_name"] == "adam_adapter" :
+        if args["model_name"] == "adam_adapter" or args["model_name"] == "ranpac":
             from backbone import vision_transformer_adapter
             from easydict import EasyDict
             tuning_config = EasyDict(
@@ -482,9 +482,16 @@ class SimpleCosineIncrementalNet(BaseNet):
 class SimpleVitNet(BaseNet):
     def __init__(self, args, pretrained):
         super().__init__(args, pretrained)
+        # for RanPAC
+        self.W_rand = None
+        self.RP_dim = None
 
     def update_fc(self, nb_classes, nextperiod_initialization=None):
-        fc = self.generate_fc(self.feature_dim, nb_classes).to(self._device)
+        if self.RP_dim is not None:
+            feature_dim = self.RP_dim
+        else:
+            feature_dim = self.feature_dim
+        fc = self.generate_fc(feature_dim, nb_classes).to(self._device)
         if self.fc is not None:
             nb_output = self.fc.out_features
             weight = copy.deepcopy(self.fc.weight.data)
@@ -492,7 +499,7 @@ class SimpleVitNet(BaseNet):
             if nextperiod_initialization is not None:
                 weight = torch.cat([weight, nextperiod_initialization])
             else:
-                weight = torch.cat([weight, torch.zeros(nb_classes - nb_output, self.feature_dim).to(self._device)])
+                weight = torch.cat([weight, torch.zeros(nb_classes - nb_output, feature_dim).to(self._device)])
             fc.weight = nn.Parameter(weight)
         del self.fc
         self.fc = fc
@@ -506,6 +513,8 @@ class SimpleVitNet(BaseNet):
 
     def forward(self, x):
         x = self.backbone(x)
+        if self.W_rand is not None:
+            x = torch.nn.functional.relu(x @ self.W_rand)
         out = self.fc(x)
         out.update({"features": x})
         return out

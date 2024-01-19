@@ -47,6 +47,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `DualPrompt`: DualPrompt: Complementary Prompting for Rehearsal-free Continual Learning. ECCV 2022 [[paper](https://arxiv.org/abs/2204.04799)]
 - `CODA-Prompt`: CODA-Prompt: COntinual Decomposed Attention-based Prompting for Rehearsal-Free Continual Learning. CVPR 2023 [[paper](https://arxiv.org/abs/2211.13218)]
 - `ADAM`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. arXiv 2023 [[paper](https://arxiv.org/abs/2303.07338)]
+- `RanPAC`: RanPAC: Random Projections and Pre-trained Models for Continual Learning. NeurIPS 2023 [[paper](https://arxiv.org/abs/2307.02251)]
 
 > Intended authors are welcome to contact us to reproduce your methods in our repo. Feel free to merge your algorithm into PILOT if you are using our codebase!
 
@@ -141,6 +142,7 @@ We thank the following repos providing helpful components/functions in our work.
 - [RevisitingCIL](https://github.com/zhoudw-zdw/RevisitingCIL)
 - [l2p-pytorch](https://github.com/JH-LEE-KR/l2p-pytorch)
 - [CODA-Prompt](https://github.com/GT-RIPL/CODA-Prompt)
+- [RanPAC](https://github.com/RanPAC/RanPAC/)
 
 ## 🤗 Contact
 
