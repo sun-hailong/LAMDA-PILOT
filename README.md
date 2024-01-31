@@ -34,6 +34,13 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
       year={2023}
     }
 
+    @article{zhou2024continual,
+      title={Continual Learning with Pre-Trained Models: A Survey},
+      author={Zhou, Da-Wei and Sun, Hai-Long and Ning, Jingyi and Ye, Han-Jia and Zhan, De-Chuan},
+      journal={arXiv preprint arXiv:2401.16386},
+      year={2024}
+    }
+
 ## 🌟 Methods Reproduced
 
 - `FineTune`: Baseline method which simply updates parameters on new tasks.
