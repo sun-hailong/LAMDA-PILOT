@@ -207,7 +207,7 @@ class BaseNet(nn.Module):
 
     def extract_vector(self, x):
         if self.model_type == 'cnn':
-            self.backbone(x)['features']
+            return self.backbone(x)['features']
         else:
             return self.backbone(x)
 
