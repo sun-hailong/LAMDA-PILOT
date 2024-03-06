@@ -4,6 +4,7 @@ import torch
 from torch import nn
 from backbone.linears import SimpleLinear, SplitCosineLinear, CosineLinear
 from backbone.prompt import CodaPrompt
+from backbone.resnet import resnet18, resnet34, resnet50, resnet101, resnet152
 import timm
 
 def get_backbone(args, pretrained=False):
@@ -17,6 +18,19 @@ def get_backbone(args, pretrained=False):
         model = timm.create_model("vit_base_patch16_224_in21k",pretrained=True, num_classes=0)
         model.out_dim = 768
         return model.eval()
+    # resnet backbone
+    elif 'resnet' in name:
+        if name == "resnet18":
+            model = resnet18(pretrained=True, args=args)
+        elif name == "resnet34":
+            model = resnet34(pretrained=True, args=args)
+        elif name == "resnet50":
+            model = resnet50(pretrained=True, args=args)
+        elif name == "resnet101":
+            model = resnet101(pretrained=True, args=args)
+        elif name == "resnet152":
+            model = resnet152(pretrained=True, args=args)
+        return model
 
     elif '_memo' in name:
         if args["model_name"] == "memo":
