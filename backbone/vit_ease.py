@@ -25,7 +25,7 @@ import logging
 import os
 from collections import OrderedDict
 import torch
-
+import copy
 
 
 class Adapter(nn.Module):
@@ -90,9 +90,6 @@ class Adapter(nn.Module):
         return output
 
 
-
-
-
 class Attention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, attn_drop=0., proj_drop=0.,):
         super().__init__()
@@ -155,34 +152,30 @@ class Block(nn.Module):
         self.act = act_layer()
         self.mlp_drop = nn.Dropout(drop)
 
-        if config.ffn_adapt:
-            self.adaptmlp = Adapter(self.config, dropout=0.1, bottleneck=config.ffn_num,
-                                    init_option=config.ffn_adapter_init_option,
-                                    adapter_scalar=config.ffn_adapter_scalar,
-                                    adapter_layernorm_option=config.ffn_adapter_layernorm_option,
-                                    )
-
-    def forward(self, x):
+    def forward(self, x, adapt=None):
         x = x + self.drop_path(self.attn(self.norm1(x)))
-        if self.config.ffn_adapt and self.config.ffn_option == 'parallel':
-            adapt_x = self.adaptmlp(x, add_residual=False)
+        if adapt is not None:
+            adapt_x = adapt(x, add_residual=False)
+        else:
+            adapt_x = None
+            # print("use PTM backbone without adapter.")
 
         residual = x
         x = self.mlp_drop(self.act(self.fc1(self.norm2(x))))
         x = self.drop_path(self.mlp_drop(self.fc2(x)))
 
-        if self.config.ffn_adapt:
-            if self.config.ffn_option == 'sequential':
-                x = self.adaptmlp(x)
-            elif self.config.ffn_option == 'parallel':
-                x = x + adapt_x
-            else:
-                raise ValueError(self.config.ffn_adapt)
+        if adapt_x is not None:
+            if self.config.ffn_adapt:
+                if self.config.ffn_option == 'sequential':
+                    x = adapt(x)
+                elif self.config.ffn_option == 'parallel':
+                    x = x + adapt_x
+                else:
+                    raise ValueError(self.config.ffn_adapt)
 
         x = residual + x
+
         return x
-
-
 
 
 
@@ -194,7 +187,6 @@ class VisionTransformer(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0., embed_layer=PatchEmbed, norm_layer=None,
                  act_layer=None, weight_init='', tuning_config=None):
         super().__init__()
-
 
         print("I'm using ViT with adapters.")
         self.tuning_config = tuning_config
@@ -257,6 +249,12 @@ class VisionTransformer(nn.Module):
                  range(depth)])
             for eee in self.embeddings:
                 torch.nn.init.xavier_uniform_(eee.data)
+        
+        self.config = tuning_config
+        self._device = tuning_config._device
+        self.adapter_list = []
+        self.cur_adapter = nn.ModuleList()
+        self.get_new_adapter()
 
     def init_weights(self, mode=''):
         raise NotImplementedError()
@@ -269,7 +267,7 @@ class VisionTransformer(nn.Module):
         if self.dist_token is None:
             return self.head
         else:
-            return self.head, self.head_dist
+            return self.head, self.head_dist           
 
     def reset_classifier(self, num_classes, global_pool=''):
         self.num_classes = num_classes
@@ -277,25 +275,51 @@ class VisionTransformer(nn.Module):
         if self.num_tokens == 2:
             self.head_dist = nn.Linear(self.embed_dim, self.num_classes) if num_classes > 0 else nn.Identity()
 
-    def forward_features(self, x):
+    def freeze(self):
+        for param in self.parameters():
+            param.requires_grad = False
+        
+        for i in range(len(self.cur_adapter)):
+            self.cur_adapter[i].requires_grad = True
+        
+    def get_new_adapter(self):
+        config = self.config
+        self.cur_adapter = nn.ModuleList()
+        if config.ffn_adapt:
+            for i in range(len(self.blocks)):
+                adapter = Adapter(self.config, dropout=0.1, bottleneck=config.ffn_num,
+                                        init_option=config.ffn_adapter_init_option,
+                                        adapter_scalar=config.ffn_adapter_scalar,
+                                        adapter_layernorm_option=config.ffn_adapter_layernorm_option,
+                                        ).to(self._device)
+                self.cur_adapter.append(adapter)
+            self.cur_adapter.requires_grad_(True)
+        else:
+            print("====Not use adapter===")
+
+    def add_adapter_to_list(self):
+        self.adapter_list.append(copy.deepcopy(self.cur_adapter.requires_grad_(False)))
+        self.get_new_adapter()
+    
+    def forward_train(self, x):
         B = x.shape[0]
         x = self.patch_embed(x)
 
-        cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
+        cls_tokens = self.cls_token.expand(B, -1, -1)
         x = torch.cat((cls_tokens, x), dim=1)
         x = x + self.pos_embed
         x = self.pos_drop(x)
 
         for idx, blk in enumerate(self.blocks):
-            if self.tuning_config.vpt_on:
+            if self.config.vpt_on:
                 eee = self.embeddings[idx].expand(B, -1, -1)
                 x = torch.cat([eee, x], dim=1)
-            x = blk(x)
-            if self.tuning_config.vpt_on:
-                x = x[:, self.tuning_config.vpt_num:, :]
+            x = blk(x, self.cur_adapter[idx])
+            if self.config.vpt_on:
+                x = x[:, self.config.vpt_num:, :]
 
         if self.global_pool:
-            x = x[:, 1:, :].mean(dim=1)  # global pool without cls token
+            x = x[:, 1:, :].mean(dim=1)
             outcome = self.fc_norm(x)
         else:
             x = self.norm(x)
@@ -303,58 +327,87 @@ class VisionTransformer(nn.Module):
 
         return outcome
 
-    def forward(self, x):
-        x = self.forward_features(x,)
-        if self.head_dist is not None:
-            x, x_dist = self.head(x[0]), self.head_dist(x[1])  # x must be a tuple
-            if self.training and not torch.jit.is_scripting():
-                # during inference, return the average of both classifier predictions
-                return x, x_dist
-            else:
-                return (x + x_dist) / 2
+    def forward_test(self, x, use_init_ptm=False):
+        B = x.shape[0]
+        x = self.patch_embed(x)
+
+        cls_tokens = self.cls_token.expand(B, -1, -1)
+        x = torch.cat((cls_tokens, x), dim=1)
+        x = x + self.pos_embed
+        x_init = self.pos_drop(x)
+        
+        features = []
+        
+        if use_init_ptm:
+            x = copy.deepcopy(x_init)
+            x = self.blocks(x)
+            x = self.norm(x)
+            features.append(x)
+        
+        for i in range(len(self.adapter_list)):
+            x = copy.deepcopy(x_init)
+            for j in range(len(self.blocks)):
+                adapt = self.adapter_list[i][j]
+                x = self.blocks[j](x, adapt)
+            x = self.norm(x)
+            features.append(x)
+        
+        x = copy.deepcopy(x_init)
+        for i in range(len(self.blocks)):
+            adapt = self.cur_adapter[i]
+            x = self.blocks[i](x, adapt)
+        x = self.norm(x)
+        features.append(x)
+        
+        return features
+
+    def forward(self, x, test=False, use_init_ptm=False):
+        if not test:
+            output = self.forward_train(x)
         else:
-            x = self.head(x)
-        return x
+            features = self.forward_test(x, use_init_ptm)
+            output = torch.Tensor().to(features[0].device)
+            for x in features:
+                cls = x[:, 0, :]
+                output = torch.cat((
+                    output,
+                    cls
+                ), dim=1)
 
+        return output
 
-# def vit_base_patch16(**kwargs):
-#     model = VisionTransformer(
-#         patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     return model
+    def forward_proto(self, x, adapt_index):
+        B = x.shape[0]
+        x = self.patch_embed(x)
 
+        cls_tokens = self.cls_token.expand(B, -1, -1)
+        x = torch.cat((cls_tokens, x), dim=1)
+        x = x + self.pos_embed
+        x_init = self.pos_drop(x)
+        
+        # the init_PTM's feature
+        if adapt_index == -1:
+            x = copy.deepcopy(x_init)
+            x = self.blocks(x)
+            x = self.norm(x)
+            output = x[:, 0, :]
+            return output
 
-# def vit_large_patch16(**kwargs):
-#     model = VisionTransformer(
-#         patch_size=16, embed_dim=1024, depth=24, num_heads=16, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     return model
+        i = adapt_index
+        x = copy.deepcopy(x_init)
+        for j in range(len(self.blocks)):
+            if i < len(self.adapter_list):
+                adapt = self.adapter_list[i][j]
+            else:
+                adapt = self.cur_adapter[j]
+            x = self.blocks[j](x, adapt)
+        x = self.norm(x)
+        output = x[:, 0, :]
+        
+        return output
+        
 
-
-# def vit_huge_patch14(**kwargs):
-#     model = VisionTransformer(
-#         patch_size=14, embed_dim=1280, depth=32, num_heads=16, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     return model
-
-
-# def _create_vision_transformer(variant, pretrained=False, **kwargs):
-#     if kwargs.get('features_only', None):
-#         raise RuntimeError('features_only not implemented for Vision Transformer models.')
-
-#     pretrained_cfg = resolve_pretrained_cfg(variant, pretrained_cfg=kwargs.pop('pretrained_cfg', None))
-#     model = build_model_with_cfg(
-#         VisionTransformer, variant, pretrained,
-#         pretrained_cfg=pretrained_cfg,
-#         pretrained_filter_fn=checkpoint_filter_fn,
-#         pretrained_custom_load='npz' in pretrained_cfg['url'],
-#         **kwargs)
-#     return model
-
-
-
-
-def vit_base_patch16_224_adapter(pretrained=False, **kwargs):
+def vit_base_patch16_224_ease(pretrained=False, **kwargs):
     
     model = VisionTransformer(patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -390,17 +443,6 @@ def vit_base_patch16_224_adapter(pretrained=False, **kwargs):
     msg = model.load_state_dict(state_dict, strict=False)
     print(msg)
 
-    # s=model.state_dict()
-    # # print the keys in s
-    # for key in s.keys():
-    #     print(key)
-    # # print the keys in checkpoint_model
-    # for key in state_dict.keys():
-    #     if key in s.keys():
-    #         print(key, 'yes')
-    #     else:
-    #         print(key, 'NOOOOOOOOOOOOOOOOOOO')
-
     # freeze all but the adapter
     for name, p in model.named_parameters():
         if name in msg.missing_keys:
@@ -409,9 +451,7 @@ def vit_base_patch16_224_adapter(pretrained=False, **kwargs):
             p.requires_grad = False 
     return model
 
-
-
-def vit_base_patch16_224_in21k_adapter(pretrained=False, **kwargs):
+def vit_base_patch16_224_in21k_ease(pretrained=False, **kwargs):
     
     model = VisionTransformer(patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -446,17 +486,6 @@ def vit_base_patch16_224_in21k_adapter(pretrained=False, **kwargs):
 
     msg = model.load_state_dict(state_dict, strict=False)
     print(msg)
-
-    # s=model.state_dict()
-    # # print the keys in s
-    # for key in s.keys():
-    #     print(key)
-    # # print the keys in checkpoint_model
-    # for key in state_dict.keys():
-    #     if key in s.keys():
-    #         print(key, 'yes')
-    #     else:
-    #         print(key, 'NOOOOOOOOOOOOOOOOOOO')
 
     # freeze all but the adapter
     for name, p in model.named_parameters():

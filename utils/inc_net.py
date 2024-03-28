@@ -2,7 +2,7 @@ import copy
 import logging
 import torch
 from torch import nn
-from backbone.linears import SimpleLinear, SplitCosineLinear, CosineLinear
+from backbone.linears import SimpleLinear, SplitCosineLinear, CosineLinear, EaseCosineLinear
 from backbone.prompt import CodaPrompt
 import timm
 
@@ -20,7 +20,7 @@ def get_backbone(args, pretrained=False):
 
     elif '_memo' in name:
         if args["model_name"] == "memo":
-            from backbone import vision_transformer_memo
+            from backbone import vit_memo
             _basenet, _adaptive_net = timm.create_model("vit_base_patch16_224_memo", pretrained=True, num_classes=0)
             _basenet.out_dim = 768
             _adaptive_net.out_dim = 768
@@ -28,7 +28,7 @@ def get_backbone(args, pretrained=False):
     # SSF 
     elif '_ssf' in name:
         if args["model_name"] == "adam_ssf"  or args["model_name"] == "ranpac":
-            from backbone import vision_transformer_ssf
+            from backbone import vit_ssf
             if name == "pretrained_vit_b16_224_ssf":
                 model = timm.create_model("vit_base_patch16_224_ssf", pretrained=True, num_classes=0)
                 model.out_dim = 768
@@ -65,7 +65,7 @@ def get_backbone(args, pretrained=False):
     elif '_adapter' in name:
         ffn_num = args["ffn_num"]
         if args["model_name"] == "adam_adapter" or args["model_name"] == "ranpac":
-            from backbone import vision_transformer_adapter
+            from backbone import vit_adapter
             from easydict import EasyDict
             tuning_config = EasyDict(
                 # AdaptFormer
@@ -96,7 +96,7 @@ def get_backbone(args, pretrained=False):
     # L2P
     elif '_l2p' in name:
         if args["model_name"] == "l2p":
-            from backbone import vision_transformer_l2p
+            from backbone import vit_l2p
             model = timm.create_model(
                 args["backbone_type"],
                 pretrained=args["pretrained"],
@@ -122,7 +122,7 @@ def get_backbone(args, pretrained=False):
     # dualprompt
     elif '_dualprompt' in name:
         if args["model_name"] == "dualprompt":
-            from backbone import vision_transformer_dual_prompt
+            from backbone import vit_dualprompt
             model = timm.create_model(
                 args["backbone_type"],
                 pretrained=args["pretrained"],
@@ -156,7 +156,7 @@ def get_backbone(args, pretrained=False):
     # Coda_Prompt
     elif '_coda_prompt' in name:
         if args["model_name"] == "coda_prompt":
-            from backbone import vision_transformer_coda_prompt
+            from backbone import vit_coda_promtpt
             model = timm.create_model(args["backbone_type"], pretrained=args["pretrained"])
             # model = vision_transformer_coda_prompt.VisionTransformer(img_size=224, patch_size=16, embed_dim=768, depth=12,
             #                 num_heads=12, ckpt_layer=0,
@@ -166,6 +166,36 @@ def get_backbone(args, pretrained=False):
             # del load_dict['head.weight']; del load_dict['head.bias']
             # model.load_state_dict(load_dict)
             return model
+    elif '_ease' in name:
+        ffn_num = args["ffn_num"]
+        if args["model_name"] == "ease" :
+            from backbone import vit_ease
+            from easydict import EasyDict
+            tuning_config = EasyDict(
+                # AdaptFormer
+                ffn_adapt=True,
+                ffn_option="parallel",
+                ffn_adapter_layernorm_option="none",
+                ffn_adapter_init_option="lora",
+                ffn_adapter_scalar="0.1",
+                ffn_num=ffn_num,
+                d_model=768,
+                # VPT related
+                vpt_on=False,
+                vpt_num=0,
+                _device = args["device"][0]
+            )
+            if name == "vit_base_patch16_224_ease":
+                model = vit_ease.vit_base_patch16_224_ease(num_classes=0,
+                    global_pool=False, drop_path_rate=0.0, tuning_config=tuning_config)
+                model.out_dim=768
+            elif name == "vit_base_patch16_224_in21k_ease":
+                model = vit_ease.vit_base_patch16_224_in21k_ease(num_classes=0,
+                    global_pool=False, drop_path_rate=0.0, tuning_config=tuning_config)
+                model.out_dim=768
+            else:
+                raise NotImplementedError("Unknown type {}".format(name))
+            return model.eval()
         else:
             raise NotImplementedError("Inconsistent model name and model type")
     else:
@@ -906,3 +936,75 @@ class AdaptiveNet(nn.Module):
         self.fc.load_state_dict(model_infos['fc'])
         test_acc = model_infos['test_acc']
         return test_acc
+
+
+class EaseNet(BaseNet):
+    def __init__(self, args, pretrained=True):
+        super().__init__(args, pretrained)
+        self.args = args
+        self.inc = args["increment"]
+        self.init_cls = args["init_cls"]
+        self._cur_task = -1
+        self.out_dim =  self.backbone.out_dim
+        self.fc = None
+        self.use_init_ptm = args["use_init_ptm"]
+        self.alpha = args["alpha"]
+        self.beta = args["beta"]
+            
+    def freeze(self):
+        for name, param in self.named_parameters():
+            param.requires_grad = False
+            # print(name)
+    
+    @property
+    def feature_dim(self):
+        if self.use_init_ptm:
+            return self.out_dim * (self._cur_task + 2)
+        else:
+            return self.out_dim * (self._cur_task + 1)
+
+    # (proxy_fc = cls * dim)
+    def update_fc(self, nb_classes):
+        self._cur_task += 1
+        
+        if self._cur_task == 0:
+            self.proxy_fc = self.generate_fc(self.out_dim, self.init_cls).to(self._device)
+        else:
+            self.proxy_fc = self.generate_fc(self.out_dim, self.inc).to(self._device)
+        
+        fc = self.generate_fc(self.feature_dim, nb_classes).to(self._device)
+        fc.reset_parameters_to_zero()
+        
+        if self.fc is not None:
+            old_nb_classes = self.fc.out_features
+            weight = copy.deepcopy(self.fc.weight.data)
+            fc.sigma.data = self.fc.sigma.data
+            fc.weight.data[ : old_nb_classes, : -self.out_dim] = nn.Parameter(weight)
+        del self.fc
+        self.fc = fc
+    
+    def generate_fc(self, in_dim, out_dim):
+        fc = EaseCosineLinear(in_dim, out_dim)
+        return fc
+    
+    def extract_vector(self, x):
+        return self.backbone(x)
+
+    def forward(self, x, test=False):
+        if test == False:
+            x = self.backbone.forward(x, False)
+            out = self.proxy_fc(x)
+        else:
+            x = self.backbone.forward(x, True, use_init_ptm=self.use_init_ptm)
+            if self.args["moni_adam"] or (not self.args["use_reweight"]):
+                out = self.fc(x)
+            else:
+                out = self.fc.forward_reweight(x, cur_task=self._cur_task, alpha=self.alpha, init_cls=self.init_cls, inc=self.inc, use_init_ptm=self.use_init_ptm, beta=self.beta)
+            
+        out.update({"features": x})
+        return out
+
+    def show_trainable_params(self):
+        for name, param in self.named_parameters():
+            if param.requires_grad:
+                print(name, param.numel())
