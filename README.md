@@ -41,10 +41,17 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
       year={2024}
     }
 
+    @article{zhou2023class,
+      author = {Zhou, Da-Wei and Wang, Qi-Wei and Qi, Zhi-Hong and Ye, Han-Jia and Zhan, De-Chuan and Liu, Ziwei},
+      title = {Deep Class-Incremental Learning: A Survey},
+      journal = {arXiv preprint arXiv:2302.03648},
+      year = {2023}
+     }
+
 ## 📰 What's New
 
 - [2024-04]🌟 Check out our [latest survey](https://arxiv.org/abs/2401.16386) on pre-trained model-based continual learning (**IJCAI 2024**)!
-- [2024-03]🌟 Add [EASE](https://arxiv.org/abs/2403.12030). State-of-the-art methods of 2024!
+- [2024-03]🌟 Add [EASE](https://arxiv.org/abs/2403.12030). State-of-the-art method of 2024!
 - [2024-03]🌟 Check out our [latest work](https://arxiv.org/abs/2403.12030) on pre-trained model-based class-incremental learning (**CVPR 2024**)!
 - [2023-12]🌟 Add RanPAC.
 - [2023-09]🌟 Initial version of PILOT is released.
