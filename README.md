@@ -23,7 +23,7 @@
 
 ## 🎉 Introduction
 
-Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/2309.07117">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, DER, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
+Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/2309.07117">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
 
 **If you use any content of this repo for your work, please cite the following bib entry:**
 
@@ -40,6 +40,16 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
       journal={arXiv preprint arXiv:2401.16386},
       year={2024}
     }
+
+## 📰 What's New
+
+- [2024-04]🌟 Check out our [latest survey](https://arxiv.org/abs/2401.16386) on pre-trained model-based continual learning (**IJCAI 2024**)!
+- [2024-03]🌟 Add [EASE](https://arxiv.org/abs/2403.12030). State-of-the-art methods of 2024!
+- [2024-03]🌟 Check out our [latest work](https://arxiv.org/abs/2403.12030) on pre-trained model-based class-incremental learning (**CVPR 2024**)!
+- [2023-12]🌟 Add RanPAC.
+- [2023-09]🌟 Initial version of PILOT is released.
+- [2023-05]🌟 Check out our recent work about [class-incremental learning with vision-language models](https://arxiv.org/abs/2305.19270)!
+- [2023-02]🌟 Check out our [rigorous and unified survey](https://arxiv.org/abs/2302.03648) about class-incremental learning, which introduces some memory-agnostic measures with holistic evaluations from multiple aspects!
 
 ## 🌟 Methods Reproduced
 
