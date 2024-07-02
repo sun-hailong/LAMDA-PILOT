@@ -2,7 +2,7 @@ import copy
 import logging
 import torch
 from torch import nn
-from backbone.linears import SimpleLinear, SplitCosineLinear, CosineLinear, EaseCosineLinear
+from backbone.linears import SimpleLinear, SplitCosineLinear, CosineLinear, EaseCosineLinear, SimpleContinualLinear
 from backbone.prompt import CodaPrompt
 import timm
 
@@ -1008,3 +1008,56 @@ class EaseNet(BaseNet):
         for name, param in self.named_parameters():
             if param.requires_grad:
                 print(name, param.numel())
+
+class SLCANet(BaseNet):
+
+    def __init__(self, args, pretrained=True, fc_with_ln=False):
+        super().__init__(args, pretrained)
+        self.old_fc = None
+        self.fc_with_ln = fc_with_ln
+
+
+    def extract_layerwise_vector(self, x, pool=True):
+        with torch.no_grad():
+            features = self.backbone(x, layer_feat=True)['features']
+        for f_i in range(len(features)):
+            if pool:
+                features[f_i] = features[f_i].mean(1).cpu().numpy() 
+            else:
+                features[f_i] = features[f_i][:, 0].cpu().numpy() 
+        return features
+
+
+    def update_fc(self, nb_classes, freeze_old=True):
+        if self.fc is None:
+            self.fc = self.generate_fc(self.feature_dim, nb_classes)
+        else:
+            self.fc.update(nb_classes, freeze_old=freeze_old)
+
+    def save_old_fc(self):
+        if self.old_fc is None:
+            self.old_fc = copy.deepcopy(self.fc)
+        else:
+            self.old_fc.heads.append(copy.deepcopy(self.fc.heads[-1]))
+
+    def generate_fc(self, in_dim, out_dim):
+        fc = SimpleContinualLinear(in_dim, out_dim)
+
+        return fc
+
+    def forward(self, x, bcb_no_grad=False, fc_only=False):
+        if fc_only:
+            fc_out = self.fc(x)
+            if self.old_fc is not None:
+                old_fc_logits = self.old_fc(x)['logits']
+                fc_out['old_logits'] = old_fc_logits
+            return fc_out
+        if bcb_no_grad:
+            with torch.no_grad():
+                x = self.backbone(x)
+        else:
+            x = self.backbone(x)
+        out = self.fc(x)
+        out.update({"features": x})
+
+        return out

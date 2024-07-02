@@ -32,6 +32,8 @@ def get_model(model_name, args):
         from models.ranpac import Learner
     elif name == "ease":
         from models.ease import Learner
+    elif name == 'slca':
+        from models.slca import Learner
     else:
         assert 0
     
