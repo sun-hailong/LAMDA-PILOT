@@ -119,25 +119,26 @@ def _train(args):
             print('Average Accuracy (CNN):', sum(cnn_curve["top1"])/len(cnn_curve["top1"]))
             logging.info("Average Accuracy (CNN): {} \n".format(sum(cnn_curve["top1"])/len(cnn_curve["top1"])))
 
-    if len(cnn_matrix) > 0:
-        np_acctable = np.zeros([task + 1, task + 1])
-        for idxx, line in enumerate(cnn_matrix):
-            idxy = len(line)
-            np_acctable[idxx, :idxy] = np.array(line)
-        np_acctable = np_acctable.T
-        forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
-        print('Accuracy Matrix (CNN):')
-        print(np_acctable)
-        logging.info('Forgetting (CNN): {}'.format(forgetting))
-    if len(nme_matrix) > 0:
-        np_acctable = np.zeros([task + 1, task + 1])
-        for idxx, line in enumerate(nme_matrix):
-            idxy = len(line)
-            np_acctable[idxx, :idxy] = np.array(line)
-        np_acctable = np_acctable.T
-        forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
-        print('Accuracy Matrix (NME):')
-        print(np_acctable)
+    if 'print_forget' in args.keys() and args['print_forget'] is True:
+        if len(cnn_matrix) > 0:
+            np_acctable = np.zeros([task + 1, task + 1])
+            for idxx, line in enumerate(cnn_matrix):
+                idxy = len(line)
+                np_acctable[idxx, :idxy] = np.array(line)
+            np_acctable = np_acctable.T
+            forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+            print('Accuracy Matrix (CNN):')
+            print(np_acctable)
+            logging.info('Forgetting (CNN): {}'.format(forgetting))
+        if len(nme_matrix) > 0:
+            np_acctable = np.zeros([task + 1, task + 1])
+            for idxx, line in enumerate(nme_matrix):
+                idxy = len(line)
+                np_acctable[idxx, :idxy] = np.array(line)
+            np_acctable = np_acctable.T
+            forgetting = np.mean((np.max(np_acctable, axis=1) - np_acctable[:, task])[:task])
+            print('Accuracy Matrix (NME):')
+            print(np_acctable)
         logging.info('Forgetting (NME): {}'.format(forgetting))
 
 
