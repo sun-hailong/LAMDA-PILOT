@@ -14,7 +14,7 @@
 ---
 
 <p align="center">
-  <a href=""><img src="https://img.shields.io/badge/PILOT-v0.1-darkcyan"></a>
+  <a href=""><img src="https://img.shields.io/badge/PILOT-v1.0-darkcyan"></a>
   <a href=""><img src="https://img.shields.io/github/stars/sun-hailong/LAMDA-PILOT?color=4fb5ee"></a>
   <a href=""><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsun-hailong%2FLAMDA-PILOT&count_bg=%23FFA500&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visitors&edge_flat=false"></a>
   <a href=""><img src="https://black.readthedocs.io/en/stable/_static/license.svg"></a>
@@ -73,6 +73,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `CODA-Prompt`: CODA-Prompt: COntinual Decomposed Attention-based Prompting for Rehearsal-Free Continual Learning. CVPR 2023 [[paper](https://arxiv.org/abs/2211.13218)]
 - `ADAM`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. arXiv 2023 [[paper](https://arxiv.org/abs/2303.07338)]
 - `RanPAC`: RanPAC: Random Projections and Pre-trained Models for Continual Learning. NeurIPS 2023 [[paper](https://arxiv.org/abs/2307.02251)]
+- `SLCA`: SLCA: Slow Learner with Classifier Alignment for Continual Learning on a Pre-trained Model. ICCV 2023 [[paper](https://arxiv.org/abs/2303.05118)]
 - `Ease`: Expandable Subspace Ensemble for Pre-Trained Model-Based Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2403.12030)]
 
 > Intended authors are welcome to contact us to reproduce your methods in our repo. Feel free to merge your algorithm into PILOT if you are using our codebase!
