@@ -34,6 +34,8 @@ def get_model(model_name, args):
         from models.ease import Learner
     elif name == 'slca':
         from models.slca import Learner
+    elif name == 'lae':
+        from models.lae import Learner
     else:
         assert 0
     
