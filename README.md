@@ -35,29 +35,28 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
       year={2023}
     }
 
-    @article{zhou2024continual,
-      title={Continual Learning with Pre-Trained Models: A Survey},
-      author={Zhou, Da-Wei and Sun, Hai-Long and Ning, Jingyi and Ye, Han-Jia and Zhan, De-Chuan},
-      journal={arXiv preprint arXiv:2401.16386},
-      year={2024}
+    @inproceedings{zhou2024continual,
+        title={Continual learning with pre-trained models: A survey},
+        author={Zhou, Da-Wei and Sun, Hai-Long and Ning, Jingyi and Ye, Han-Jia and Zhan, De-Chuan},
+        booktitle={IJCAI},
+        year={2024}
     }
 
     @article{zhou2023class,
-      author = {Zhou, Da-Wei and Wang, Qi-Wei and Qi, Zhi-Hong and Ye, Han-Jia and Zhan, De-Chuan and Liu, Ziwei},
-      title = {Deep Class-Incremental Learning: A Survey},
-      journal = {arXiv preprint arXiv:2302.03648},
-      year = {2023}
-     }
+        author = {Zhou, Da-Wei and Wang, Qi-Wei and Qi, Zhi-Hong and Ye, Han-Jia and Zhan, De-Chuan and Liu, Ziwei},
+        title = {Class-Incremental Learning: A Survey},
+        journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+        year = {2024}
+    }
 
 ## 📰 What's New
-
+- [2024-07]🌟 Check out our [rigorous and unified survey](https://arxiv.org/abs/2302.03648) about class-incremental learning, which introduces some memory-agnostic measures with holistic evaluations from multiple aspects (**TPAMI 2024**)!
 - [2024-04]🌟 Check out our [latest survey](https://arxiv.org/abs/2401.16386) on pre-trained model-based continual learning (**IJCAI 2024**)!
 - [2024-03]🌟 Add [EASE](https://arxiv.org/abs/2403.12030). State-of-the-art method of 2024!
 - [2024-03]🌟 Check out our [latest work](https://arxiv.org/abs/2403.12030) on pre-trained model-based class-incremental learning (**CVPR 2024**)!
 - [2023-12]🌟 Add RanPAC.
 - [2023-09]🌟 Initial version of PILOT is released.
 - [2023-05]🌟 Check out our recent work about [class-incremental learning with vision-language models](https://arxiv.org/abs/2305.19270)!
-- [2023-02]🌟 Check out our [rigorous and unified survey](https://arxiv.org/abs/2302.03648) about class-incremental learning, which introduces some memory-agnostic measures with holistic evaluations from multiple aspects!
 - [2023-01]🌟 As team members are committed to other projects and in light of the intense demands of code reviews, **we will prioritize reviewing algorithms that have explicitly cited and implemented methods from our toolbox paper in their publications.** Mentioning this can expedite the review process. We greatly appreciate your patience throughout this period.
 
 ## 🌟 Methods Reproduced
