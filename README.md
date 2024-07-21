@@ -76,6 +76,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `LAE`: A Unified Continual Learning Framework with General Parameter-Efficient Tuning. ICCV 2023 [[paper](https://arxiv.org/abs/2303.10070)]
 - `SLCA`: SLCA: Slow Learner with Classifier Alignment for Continual Learning on a Pre-trained Model. ICCV 2023 [[paper](https://arxiv.org/abs/2303.05118)]
 - `Ease`: Expandable Subspace Ensemble for Pre-Trained Model-Based Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2403.12030)]
+- `DGR`: Gradient Reweighting: Towards Imbalanced Class-Incremental Learning. CVPR 2024 [[paper](https://openaccess.thecvf.com/content/CVPR2024/papers/He_Gradient_Reweighting_Towards_Imbalanced_Class-Incremental_Learning_CVPR_2024_paper.pdf)]
 
 > Intended authors are welcome to contact us to reproduce your methods in our repo. Feel free to merge your algorithm into PILOT if you are using our codebase!
 
@@ -93,7 +94,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 <img src="./resources/imagenetRb0inc20.jpg" width="600px">
 </div>
 
-> For exemplar parameters, Coil, DER, iCaRL, MEMO, and FOSTER set the `fixed_memory` option to false and retain the `memory_size` of 2000 for CIFAR100, while setting `fixed_memory` option to true and retaining the `memory_per_class` of 20 for ImageNet-R. On the contrary, other models are exemplar-free.
+> For exemplar parameters, Coil, DER, DGR, iCaRL, MEMO, and FOSTER set the `fixed_memory` option to false and retain the `memory_size` of 2000 for CIFAR100, while setting `fixed_memory` option to true and retaining the `memory_per_class` of 20 for ImageNet-R. On the contrary, other models are exemplar-free.
 
 ## ☄️ how to use
 
