@@ -131,7 +131,7 @@ cd LAMDA-PILOT
 
     These parameters include:
 
-   - **model_name**: The model's name should be selected from the 11 methods listed above, *i.e.*, `finetune`, `icarl`, `coil`, `der`, `foster`, `memo`, `simplecil`, `l2p`, `dualprompt`, `coda-prompt` and `adam`.
+   - **model_name**: The model's name should be selected from the 12 methods listed above, *i.e.*, `finetune`, `icarl`, `coil`, `der`, `dgr`, `foster`, `memo`, `simplecil`, `l2p`, `dualprompt`, `coda-prompt` and `adam`.
    - **init_cls**: The number of classes in the initial incremental stage. As the configuration of CIL includes different settings with varying class numbers at the outset, our framework accommodates diverse options for defining the initial stage.
    - **increment**: The number of classes in each incremental stage $i$, $i$ > 1. By default, the number of classes is equal across all incremental stages.
    - **backbone_type**: The backbone network of the incremental model. It can be selected from a variety of pre-trained models available in the Timm library, such as **ViT-B/16-IN1K** and **ViT-B/16-IN21K**. Both are pre-trained on ImageNet21K, while the former is additionally fine-tuned on ImageNet1K.
