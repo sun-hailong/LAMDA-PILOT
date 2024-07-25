@@ -1,6 +1,6 @@
 # Things you need to do to get your PR merged:
 
-1. **Make sure you have cited the toolbox paper in your camera-ready version.** For example, "All models are deployed with PyCIL~\cite{sun2023pilot}". **Include the link to the paper in the pull request description.**
+1. **Make sure you have cited the toolbox paper in your camera-ready version.** For example, "All models are deployed with Pilot~\cite{sun2023pilot}". **Include the link to the paper in the pull request description.**
 2. Make sure you understand the code structure and the training process defined in the toolbox. **All new methods should inherit from the base class in base.py.**
 3. **Do not modify the readme file in your PR.** We will update the readme file after your PR is merged.
 4. **Raise a pull request.** We will review your code and merge it if it meets the requirements. The code review process may take some time. Please be patient and do not urge the reviewers.
