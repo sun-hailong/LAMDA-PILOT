@@ -1,0 +1,26 @@
+{
+    "prefix": "reproduce",
+    "dataset": "cifar224",
+    "memory_size": 2000,
+    "memory_per_class": 20,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 10,
+    "increment": 10,
+    "lambda": 1,
+    "gammar_r": 1,
+    "model_name": "dgr",
+    "backbone_type": "vit_base_patch16_224",
+    "device": ["0"],
+    "seed": [1993],
+    
+    "init_epoch": 20,
+    "init_lr": 1e-3,
+    "init_weight_decay": 5e-4,
+    "epochs": 20,
+    "lrate": 1e-3,
+    "batch_size": 128,
+    "weight_decay": 5e-4,
+    "T": 2
+}
+

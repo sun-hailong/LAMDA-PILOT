@@ -1,0 +1,26 @@
+{
+    "prefix": "reproduce",
+    "dataset": "imagenetr",
+    "memory_size": 4000,
+    "memory_per_class": 20,
+    "fixed_memory": true,
+    "shuffle": true,
+    "init_cls": 20,
+    "increment": 20,
+    "lambda": 1,
+    "gammar_r": 1,
+    "model_name": "dgr",
+    "backbone_type": "vit_base_patch16_224",
+    "device": ["0"],
+    "seed": [1993],
+    
+    "init_epoch": 20,
+    "init_lr": 5e-4,
+    "init_weight_decay": 5e-4,
+    "epochs": 20,
+    "lrate": 5e-4,
+    "batch_size": 32,
+    "weight_decay": 5e-4,
+    "T": 2
+}
+
