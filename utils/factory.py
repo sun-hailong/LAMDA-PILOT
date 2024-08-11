@@ -36,6 +36,8 @@ def get_model(model_name, args):
         from models.slca import Learner
     elif name == 'lae':
         from models.lae import Learner
+    elif name == 'fecam':
+        from models.fecam import Learner
     else:
         assert 0
     
