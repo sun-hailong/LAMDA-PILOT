@@ -26,7 +26,7 @@
 
 Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="https://arxiv.org/abs/2309.07117">[Paper]</a>. On the one hand, PILOT implements some state-of-the-art class-incremental learning algorithms based on pre-trained models, such as L2P, DualPrompt, and CODA-Prompt. On the other hand, PILOT also fits typical class-incremental learning algorithms (*e.g.*, FOSTER, and MEMO) within the context of pre-trained models to evaluate their effectiveness.
 
-**If you use any content of this repo for your work, please cite the following bib entry:**
+**If you use any content of this repo for your work, please cite the following bib entries:**
 
     @article{sun2023pilot,
       title={PILOT: A Pre-Trained Model-Based Continual Learning Toolbox},
@@ -39,10 +39,11 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
         title={Continual learning with pre-trained models: A survey},
         author={Zhou, Da-Wei and Sun, Hai-Long and Ning, Jingyi and Ye, Han-Jia and Zhan, De-Chuan},
         booktitle={IJCAI},
+        pages={8363-8371},
         year={2024}
     }
 
-    @article{zhou2023class,
+    @article{zhou2024class,
         author = {Zhou, Da-Wei and Wang, Qi-Wei and Qi, Zhi-Hong and Ye, Han-Jia and Zhan, De-Chuan and Liu, Ziwei},
         title = {Class-Incremental Learning: A Survey},
         journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
@@ -50,15 +51,15 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
     }
 
 ## 📰 What's New
-- [2024-07]🌟 Add [DGR](https://openaccess.thecvf.com/content/CVPR2024/papers/He_Gradient_Reweighting_Towards_Imbalanced_Class-Incremental_Learning_CVPR_2024_paper.pdf). New method for imbalanced class-incremental learning of **CVPR 2024**!
 - [2024-07]🌟 Check out our [rigorous and unified survey](https://arxiv.org/abs/2302.03648) about class-incremental learning, which introduces some memory-agnostic measures with holistic evaluations from multiple aspects (**TPAMI 2024**)!
+- [2024-07]🌟 Check out our [work about all-layer margin in class-incremental learning](https://openreview.net/forum?id=aksdU1KOpT) (**ICML 2024**)!
 - [2024-04]🌟 Check out our [latest survey](https://arxiv.org/abs/2401.16386) on pre-trained model-based continual learning (**IJCAI 2024**)!
 - [2024-03]🌟 Add [EASE](https://arxiv.org/abs/2403.12030). State-of-the-art method of 2024!
 - [2024-03]🌟 Check out our [latest work](https://arxiv.org/abs/2403.12030) on pre-trained model-based class-incremental learning (**CVPR 2024**)!
 - [2023-12]🌟 Add RanPAC.
 - [2023-09]🌟 Initial version of PILOT is released.
 - [2023-05]🌟 Check out our recent work about [class-incremental learning with vision-language models](https://arxiv.org/abs/2305.19270)!
-- [2023-01]🌟 As team members are committed to other projects and in light of the intense demands of code reviews, **we will prioritize reviewing algorithms that have explicitly cited and implemented methods from our toolbox paper in their publications.** Mentioning this can expedite the review process. We greatly appreciate your patience throughout this period.
+- [2023-01]🌟 As team members are committed to other projects and in light of the intense demands of code reviews, **we will prioritize reviewing algorithms that have explicitly cited and implemented methods from our toolbox paper in their publications.** Please read the [PR policy](resources/PR_policy.md) before submitting your code.
 
 ## 🌟 Methods Reproduced
 
@@ -68,18 +69,13 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `DER`: DER: Dynamically Expandable Representation for Class Incremental Learning. CVPR 2021 [[paper](https://arxiv.org/abs/2103.16788)]
 - `FOSTER`: Feature Boosting and Compression for Class-incremental Learning. ECCV 2022 [[paper](https://arxiv.org/abs/2204.04662)]
 - `MEMO`: A Model or 603 Exemplars: Towards Memory-Efficient Class-Incremental Learning. ICLR 2023 Spotlight [[paper](https://openreview.net/forum?id=S07feAlQHgM)]
-- `SimpleCIL`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. arXiv 2023 [[paper](https://arxiv.org/abs/2303.07338)]
 - `L2P`: Learning to Prompt for Continual Learning. CVPR 2022 [[paper](https://arxiv.org/abs/2112.08654)]
 - `DualPrompt`: DualPrompt: Complementary Prompting for Rehearsal-free Continual Learning. ECCV 2022 [[paper](https://arxiv.org/abs/2204.04799)]
 - `CODA-Prompt`: CODA-Prompt: COntinual Decomposed Attention-based Prompting for Rehearsal-Free Continual Learning. CVPR 2023 [[paper](https://arxiv.org/abs/2211.13218)]
-- `ADAM`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. arXiv 2023 [[paper](https://arxiv.org/abs/2303.07338)]
 - `RanPAC`: RanPAC: Random Projections and Pre-trained Models for Continual Learning. NeurIPS 2023 [[paper](https://arxiv.org/abs/2307.02251)]
 - `LAE`: A Unified Continual Learning Framework with General Parameter-Efficient Tuning. ICCV 2023 [[paper](https://arxiv.org/abs/2303.10070)]
 - `SLCA`: SLCA: Slow Learner with Classifier Alignment for Continual Learning on a Pre-trained Model. ICCV 2023 [[paper](https://arxiv.org/abs/2303.05118)]
 - `Ease`: Expandable Subspace Ensemble for Pre-Trained Model-Based Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2403.12030)]
-- `DGR`: Gradient Reweighting: Towards Imbalanced Class-Incremental Learning. CVPR 2024 [[paper](https://openaccess.thecvf.com/content/CVPR2024/papers/He_Gradient_Reweighting_Towards_Imbalanced_Class-Incremental_Learning_CVPR_2024_paper.pdf)]
-
-> Intended authors are welcome to contact us to reproduce your methods in our repo. Feel free to merge your algorithm into PILOT if you are using our codebase!
 
 ## 📝 Reproduced Results
 
@@ -116,6 +112,8 @@ cd LAMDA-PILOT
 4. [tqdm](https://github.com/tqdm/tqdm)
 5. [numpy](https://github.com/numpy/numpy)
 6. [scipy](https://github.com/scipy/scipy)
+7. [easydict](https://github.com/makinacorpus/easydict)
+
 
 ### 🔑 Run experiment
 
