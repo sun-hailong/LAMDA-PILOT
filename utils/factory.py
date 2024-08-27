@@ -38,6 +38,8 @@ def get_model(model_name, args):
         from models.lae import Learner
     elif name == 'dgr':
         from models.dgr import Learner
+    elif name == 'cofima':
+        from models.cofima import Learner
     else:
         assert 0
     

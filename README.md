@@ -79,6 +79,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `Ease`: Expandable Subspace Ensemble for Pre-Trained Model-Based Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2403.12030)]
 - `SimpleCIL`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 - `ADAM`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
+- `CoFiMA`: Weighted Ensemble Models Are Strong Continual Learners. ECCV 2024 [[paper](https://arxiv.org/abs/2312.08977)]
 
 ## 📝 Reproduced Results
 

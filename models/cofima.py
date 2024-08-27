@@ -6,16 +6,70 @@ from torch import optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from models.base import BaseLearner
-from utils.inc_net import SLCANet
 from torch.distributions.multivariate_normal import MultivariateNormal
-from tqdm import tqdm
+from utils.inc_net import SLCANet
+import copy
+import os
 
+T = 2
 num_workers = 8
+
+fishermax = 0.0001
+
+
+def interpolate_weights(theta_0, theta_1, alpha, fisher=False, fisher_mat=None):
+    # interpolate between checkpoints with mixing coefficient alpha
+    if not fisher:
+        theta = {
+            key: (1 - alpha) * theta_0[key] + alpha * theta_1[key]
+            for key in theta_0.keys()
+        }
+
+        # Find the additional head weights
+        unique_keys = set(theta_1.keys()) - set(theta_0.keys())
+        for item in unique_keys:
+            theta[item] = theta_1[item]
+
+    else:
+        assert len(fisher_mat) == 2
+        # weights of current task model, index: 1
+        F_theta1 = {
+            key: fisher_mat[1][key] * theta_1[key]
+            for key in theta_1.keys()
+        }
+
+        # weights of previous task model, index: 1
+        F_theta0 = {
+            key: fisher_mat[0][key] * theta_0[key]
+            for key in theta_0.keys()
+        }
+
+        # Weighted average of the weights using Fisher coeff, and normalize
+        # new_theta = ((1 - alpha) * F0 *theta0 + alpha * F1 *theta1) / ((1 - alpha) * F0 + alpha * F1)
+
+        theta = {
+            key: ((1 - alpha) * F_theta0[key] + alpha * F_theta1[key]) /
+                                ((1 - alpha) * fisher_mat[0][key] + alpha * fisher_mat[1][key])
+            for key in theta_0.keys()
+        }
+
+        # Find the additional head weights
+        unique_keys = set(theta_1.keys()) - set(theta_0.keys())
+        for item in unique_keys:
+            theta[item] = F_theta1[item]
+
+    return theta
 
 class Learner(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
+        self.args = args
+
         self._network = SLCANet(args, pretrained=True)
+        #self.log_path = "logs/{}/{}/{}_{}".format(args['exp_grp'], args['experiment_name'],args['model_name'], args['model_postfix'])
+        #os.makedirs(self.log_path, exist_ok=True)
+        
+        self.model_prefix = args['prefix']
         self.batch_size = args['batch_size']
         self.epochs = args['epochs']
         self.lrate = args['lrate']
@@ -41,15 +95,24 @@ class Learner(BaseLearner):
             self.save_before_ca = True
         else:
             self.save_before_ca = False
-        
-        self.args = args
+            
         self.seed = args['seed']
         self.task_sizes = []
+        
+        self.fisher_weighting = args['fisher_weighting']
+        self.wt_lambda = args['wt_lambda']
+        
+        # Store previous weights
+        self.prev_nets = []
+        self.init_nets = []
+
+        # Store diag fisher matrices
+        self.fisher_mat = []
 
     def after_task(self):
         self._known_classes = self._total_classes
         logging.info('Exemplar size: {}'.format(self.exemplar_size))
-        # self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}'.format(self.seed), head_only=self.fix_bcb)
+        #self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}'.format(self.seed), head_only=self.fix_bcb)
         self._network.fc.recall()
 
     def incremental_train(self, data_manager):
@@ -79,24 +142,100 @@ class Learner(BaseLearner):
 
         # CA
         self._network.fc.backup()
-        # if self.save_before_ca:
-            # self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}_before_ca'.format(self.seed), head_only=self.fix_bcb)
-        
-        self._compute_class_mean(data_manager)
-        if self._cur_task > 0 and self.ca_epochs > 0:
-            self._stage2_compact_classifier(task_size)
-        
+        #if self.save_before_ca:
+            #self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}_before_ca'.format(self.seed), head_only=self.fix_bcb)
 
+        # compute the fisher information matrix
+        if self.fisher_weighting:
+            self.fisher_mat.append(self.getFisherDiagonal(self.train_loader, self.optimizer))
+
+        if self._cur_task > 0:
+            self.init_nets.append(copy.deepcopy(self._network.state_dict()))
+            theta_0 = self.prev_nets[-1]
+            theta_1 = self._network.state_dict()
+
+            if self.fisher_weighting:
+                theta = interpolate_weights(theta_0, theta_1,
+                                                    alpha=self.wt_lambda,
+                                                    fisher=True, fisher_mat=self.fisher_mat[-2:])
+            else:
+                theta = interpolate_weights(theta_0, theta_1, alpha=self.wt_lambda)
+
+            # update the model according to the new weights
+            self._network.load_state_dict(theta, strict=True)
+
+
+        self._compute_class_mean(data_manager)
+
+        if self._cur_task>0 and self.ca_epochs>0:
+            self._stage2_compact_classifier(task_size)
+            if len(self._multiple_gpus) > 1:
+                self._network = self._network.module
+
+        self.prev_nets.append(copy.deepcopy(self._network.state_dict()))
+
+    def getFisherDiagonal(self, train_loader, optimizer):
+        fisher = {
+            n: torch.zeros(p.shape).to(self._device)
+            for n, p in self._network.named_parameters()
+            #if p.requires_grad
+        }
+        self._network.train()
+        for i, (_, inputs, targets) in enumerate(train_loader):
+            inputs, targets = inputs.to(self._device), targets.to(self._device)
+
+            logits = self._network(inputs, bcb_no_grad=self.fix_bcb)['logits']
+            loss = torch.nn.functional.cross_entropy(logits, targets)
+
+            optimizer.zero_grad()
+            loss.backward()
+            for n, p in self._network.named_parameters():
+                if p.grad is not None:
+                    fisher[n] += p.grad.pow(2).clone()
+
+        for n, p in fisher.items():
+            fisher[n] = p / len(train_loader)
+            fisher[n] = torch.min(fisher[n], torch.tensor(fishermax))
+        return fisher
+
+    def _compute_class_mean(self, data_manager):
+        if hasattr(self, '_class_means_slca') and self._class_means_slca is not None:
+            ori_classes = self._class_means_slca.shape[0]
+            assert ori_classes==self._known_classes
+            new_class_means_slca = np.zeros((self._total_classes, self.feature_dim))
+            new_class_means_slca[:self._known_classes] = self._class_means_slca
+            self._class_means_slca = new_class_means_slca
+            new_class_cov = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim))
+            new_class_cov[:self._known_classes] = self._class_covs_slca
+            self._class_covs_slca = new_class_cov
+        else:
+            self._class_means_slca = np.zeros((self._total_classes, self.feature_dim))
+            self._class_covs_slca = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim))
+        
+        for class_idx in range(self._known_classes, self._total_classes):
+            data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
+                                                                  mode='test', ret_data=True)
+            idx_loader = DataLoader(idx_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
+            vectors, _ = self._extract_vectors(idx_loader)
+
+            # vectors = np.concatenate([vectors_aug, vectors])
+
+            class_mean = np.mean(vectors, axis=0)
+            # class_cov = np.cov(vectors.T)
+            class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-4
+            self._class_means_slca[class_idx, :] = class_mean
+            self._class_covs_slca[class_idx, ...] = class_cov
+    
     def _run(self, train_loader, test_loader, optimizer, scheduler):
-        prog_bar = tqdm(range(self.epochs))
-        for _, epoch in enumerate(prog_bar):
+        run_epochs = self.epochs
+        for epoch in range(1, run_epochs+1):
             self._network.train()
             losses = 0.
             for i, (_, inputs, targets) in enumerate(train_loader):
                 inputs, targets = inputs.to(self._device), targets.to(self._device)
 
                 logits = self._network(inputs, bcb_no_grad=self.fix_bcb)['logits']
-                cur_targets = torch.where(targets-self._known_classes>=0, targets-self._known_classes, -100)
+                cur_targets = torch.where(targets-self._known_classes>=0,targets-self._known_classes,-100)
                 loss = F.cross_entropy(logits[:, self._known_classes:], cur_targets)
 
                 optimizer.zero_grad()
@@ -105,28 +244,15 @@ class Learner(BaseLearner):
                 losses += loss.item()
 
             scheduler.step()
-
-            train_acc = self._compute_accuracy(self._network, train_loader)
-            if (epoch + 1) % 5 == 0:
+            if epoch%5==0:
+                train_acc = self._compute_accuracy(self._network, train_loader)
                 test_acc = self._compute_accuracy(self._network, test_loader)
-                info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}, Test_accy {:.2f}".format(
-                    self._cur_task,
-                    epoch + 1,
-                    self.epochs,
-                    losses / len(train_loader),
-                    train_acc,
-                    test_acc,
-                )
+                info = 'Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.3f}, Test_accy {:.3f}'.format(
+                    self._cur_task, epoch, self.epochs, losses/len(train_loader), train_acc, test_acc)
             else:
-                info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}".format(
-                    self._cur_task,
-                    epoch + 1,
-                    self.epochs,
-                    losses / len(train_loader),
-                    train_acc,
-                )
-            prog_bar.set_description(info)
-        logging.info(info)
+                info = 'Task {}, Epoch {}/{} => Loss {:.3f}'.format(
+                    self._cur_task, epoch, self.epochs, losses/len(train_loader))
+            logging.info(info)
 
     def _stage1_training(self, train_loader, test_loader):
         '''
@@ -138,9 +264,10 @@ class Learner(BaseLearner):
         '''
         base_params = self._network.backbone.parameters()
         base_fc_params = [p for p in self._network.fc.parameters() if p.requires_grad==True]
-        head_scale = 1.
+        head_scale = 1. #if 'moco' in self.log_path else 1.
         if not self.fix_bcb:
             base_params = {'params': base_params, 'lr': self.lrate*self.bcb_lrscale, 'weight_decay': self.weight_decay}
+            #base_params = {'params': base_params, 'lr': 0.01, 'weight_decay': 0.005}
             base_fc_params = {'params': base_fc_params, 'lr': self.lrate*head_scale, 'weight_decay': self.weight_decay}
             network_params = [base_params, base_fc_params]
         else:
@@ -149,6 +276,8 @@ class Learner(BaseLearner):
             network_params = [{'params': base_fc_params, 'lr': self.lrate*head_scale, 'weight_decay': self.weight_decay}]
         optimizer = optim.SGD(network_params, lr=self.lrate, momentum=0.9, weight_decay=self.weight_decay)
         scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=self.milestones, gamma=self.lrate_decay)
+
+        self.optimizer = optimizer
 
         if len(self._multiple_gpus) > 1:
             self._network = nn.DataParallel(self._network, self._multiple_gpus)
@@ -239,32 +368,3 @@ class Learner(BaseLearner):
             info = 'CA Task {} => Loss {:.3f}, Test_accy {:.3f}'.format(
                 self._cur_task, losses/self._total_classes, test_acc)
             logging.info(info)
-
-
-    def _compute_class_mean(self, data_manager):
-        if hasattr(self, '_class_means_slca') and self._class_means_slca is not None:
-            ori_classes = self._class_means_slca.shape[0]
-            assert ori_classes==self._known_classes
-            new_class_means_slca = np.zeros((self._total_classes, self.feature_dim))
-            new_class_means_slca[:self._known_classes] = self._class_means_slca
-            self._class_means_slca = new_class_means_slca
-            new_class_cov = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim))
-            new_class_cov[:self._known_classes] = self._class_covs_slca
-            self._class_covs_slca = new_class_cov
-        else:
-            self._class_means_slca = np.zeros((self._total_classes, self.feature_dim))
-            self._class_covs_slca = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim))
-        
-        for class_idx in range(self._known_classes, self._total_classes):
-            data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
-                                                                  mode='test', ret_data=True)
-            idx_loader = DataLoader(idx_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
-            vectors, _ = self._extract_vectors(idx_loader)
-
-            # vectors = np.concatenate([vectors_aug, vectors])
-
-            class_mean = np.mean(vectors, axis=0)
-            # class_cov = np.cov(vectors.T)
-            class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-4
-            self._class_means_slca[class_idx, :] = class_mean
-            self._class_covs_slca[class_idx, ...] = class_cov
