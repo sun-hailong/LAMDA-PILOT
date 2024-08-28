@@ -7,8 +7,8 @@
     "shuffle": true,
     "init_cls": 10,
     "increment": 10,
-    "model_name": "adam_vpt",
-    "backbone_type": "pretrained_vit_b16_224_vpt",
+    "model_name": "aper_adapter",
+    "backbone_type": "pretrained_vit_b16_224_adapter",
     "device": ["0"],
     "seed": [1993],
     
@@ -17,8 +17,9 @@
     "batch_size":48,
     "weight_decay":0.0005,
     "min_lr":0,
+    "ffn_num":64,
     "optimizer":"sgd",
-    "vpt_type":"deep",
+    "vpt_type":"shallow",
     "prompt_token_num":5
 }
 
