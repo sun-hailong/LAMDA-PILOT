@@ -2,14 +2,14 @@ def get_model(model_name, args):
     name = model_name.lower()
     if name == "simplecil":
         from models.simplecil import Learner
-    elif name == "adam_finetune":
-        from models.adam_finetune import Learner
-    elif name == "adam_ssf":
-        from models.adam_ssf import Learner
-    elif name == "adam_vpt":
-        from models.adam_vpt import Learner 
-    elif name == "adam_adapter":
-        from models.adam_adapter import Learner
+    elif name == "aper_finetune":
+        from models.aper_finetune import Learner
+    elif name == "aper_ssf":
+        from models.aper_ssf import Learner
+    elif name == "aper_vpt":
+        from models.aper_vpt import Learner 
+    elif name == "aper_adapter":
+        from models.aper_adapter import Learner
     elif name == "l2p":
         from models.l2p import Learner
     elif name == "dualprompt":
@@ -38,7 +38,8 @@ def get_model(model_name, args):
         from models.lae import Learner
     elif name == 'fecam':
         from models.fecam import Learner
+    elif name == 'dgr':
+        from models.dgr import Learner
     else:
         assert 0
-    
     return Learner(args)

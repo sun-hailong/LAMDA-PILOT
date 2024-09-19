@@ -115,6 +115,8 @@ cd LAMDA-PILOT
 4. [tqdm](https://github.com/tqdm/tqdm)
 5. [numpy](https://github.com/numpy/numpy)
 6. [scipy](https://github.com/scipy/scipy)
+7. [easydict](https://github.com/makinacorpus/easydict)
+
 
 ### 🔑 Run experiment
 
