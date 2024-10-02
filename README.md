@@ -51,6 +51,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
     }
 
 ## 📰 What's New
+- [2024-10]🌟 Check out our [latest work](https://arxiv.org/abs/2410.00911) on pre-trained model-based domain-incremental learning! 
 - [2024-08]🌟 Check out our [latest work](https://arxiv.org/abs/2303.07338) on pre-trained model-based class-incremental learning (**IJCV 2024**)!
 - [2024-07]🌟 Check out our [rigorous and unified survey](https://arxiv.org/abs/2302.03648) about class-incremental learning, which introduces some memory-agnostic measures with holistic evaluations from multiple aspects (**TPAMI 2024**)!
 - [2024-07]🌟 Check out our [work about all-layer margin in class-incremental learning](https://openreview.net/forum?id=aksdU1KOpT) (**ICML 2024**)!
