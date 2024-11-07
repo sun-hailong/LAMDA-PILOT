@@ -47,6 +47,9 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
         author = {Zhou, Da-Wei and Wang, Qi-Wei and Qi, Zhi-Hong and Ye, Han-Jia and Zhan, De-Chuan and Liu, Ziwei},
         title = {Class-Incremental Learning: A Survey},
         journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+        volume={46},
+        number={12},
+        pages={9851--9873},
         year = {2024}
     }
 
