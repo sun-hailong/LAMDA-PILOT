@@ -1,0 +1,26 @@
+{
+    "prefix": "reproduce",
+    "dataset": "imagenetr",
+    "memory_size": 0,
+    "memory_per_class": 0,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 20,
+    "increment": 20,
+    "model_name": "cofima",
+    "model_postfix": "50e",
+    "backbone_type": "vit_base_patch16_224",
+    "device": ["0"],
+    "seed": [1993],
+    "lrate": 0.01,
+    "weight_decay": 5e-4,
+    "lrate_decay": 0.1,
+    "batch_size": 64,
+    "epochs": 50,
+    "ca_epochs": 3,
+    "ca_with_logit_norm": 0.1,
+    "milestones": [40],
+
+    "fisher_weighting": true,
+    "wt_lambda": 0.4
+}
