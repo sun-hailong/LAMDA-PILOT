@@ -1,0 +1,40 @@
+{
+    "prefix": " ",
+    "dataset": "cifar224",
+    "memory_size": 0,
+    "memory_per_class": 0,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 5,
+    "increment": 5,
+    "model_name": "mos",
+    "backbone_type": "vit_base_patch16_224_mos",
+    "device": ["0"],
+    "seed": [1993],
+    
+    "tuned_epoch": 20,
+    "init_lr": 0.03,
+    "batch_size": 48,
+    "weight_decay": 0.0005,
+    "min_lr": 0,
+    "optimizer": "sgd",
+    "scheduler": "cosine",
+    "reinit_optimizer": true,
+    "init_milestones": [10],
+    "init_lr_decay": 0.1,
+    "reg": 0.1,
+    "adapter_momentum": 0.1,
+    "ensemble": true,
+
+    "crct_epochs": 30,
+    "ca_lr": 0.005,
+    "ca_storage_efficient_method": "covariance", 
+    "ca_storage_efficient_method_choices": ["covariance", "multi-centroid", "variance"],
+    "n_centroids": 10,
+    
+    "pretrained": true,
+    "drop": 0.0,
+    "drop_path": 0.0,
+    "ffn_num": 16
+
+}
