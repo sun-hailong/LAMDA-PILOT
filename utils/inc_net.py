@@ -202,7 +202,32 @@ def get_backbone(args, pretrained=False):
         from backbone import vit_lae
         model = timm.create_model(args["backbone_type"], pretrained=True)
         return model
-        
+    elif '_mos' in name:
+        ffn_num = args["ffn_num"]
+        if args["model_name"] == "mos":
+            from backbone import vit_mos
+            from easydict import EasyDict
+            tuning_config = EasyDict(
+                # AdaptFormer
+                ffn_adapt=True,
+                ffn_option="parallel",
+                ffn_adapter_layernorm_option="none",
+                ffn_adapter_init_option="lora",
+                ffn_adapter_scalar="0.1",
+                ffn_num=ffn_num,
+                d_model=768,
+                _device = args["device"][0],
+                adapter_momentum = args["adapter_momentum"],
+                # VPT related
+                vpt_on=False,
+                vpt_num=0,
+            )
+            if name == "vit_base_patch16_224_mos":
+                model = vit_mos.vit_base_patch16_224_mos(num_classes=args["nb_classes"],
+                    global_pool=False, drop_path_rate=0.0, tuning_config=tuning_config)
+            elif name == "vit_base_patch16_224_in21k_mos":
+                model = vit_mos.vit_base_patch16_224_in21k_mos(num_classes=args["nb_classes"],
+                    global_pool=False, drop_path_rate=0.0, tuning_config=tuning_config)
     else:
         raise NotImplementedError("Unknown type {}".format(name))
 
@@ -1146,3 +1171,47 @@ class LAE(nn.Module):
     def generate_fc(self, in_dim, out_dim):
         fc = SimpleLinear(in_dim, out_dim)
         return fc
+
+class MOSNet(nn.Module):
+    def __init__(self, args, pretrained):
+        super(MOSNet, self).__init__()
+        self.backbone = get_backbone(args, pretrained)
+        self.backbone.out_dim = 768
+        self.fc = None
+        self._device = args["device"][0]
+
+    @property
+    def feature_dim(self):
+        return self.backbone.out_dim
+
+    def update_fc(self, nb_classes, nextperiod_initialization=None):
+        fc = self.generate_fc(self.feature_dim, nb_classes).to(self._device)
+        if self.fc is not None:
+            nb_output = self.fc.out_features
+            weight = copy.deepcopy(self.fc.weight.data)
+            fc.sigma.data = self.fc.sigma.data
+            if nextperiod_initialization is not None:
+                weight = torch.cat([weight, nextperiod_initialization])
+            else:
+                weight = torch.cat([weight, torch.zeros(nb_classes - nb_output, self.feature_dim).to(self._device)])
+            fc.weight = nn.Parameter(weight)
+        del self.fc
+        self.fc = fc.requires_grad_(False)
+    
+    def generate_fc(self, in_dim, out_dim):
+        fc = CosineLinear(in_dim, out_dim)
+        return fc
+    
+    def forward_orig(self, x):
+        features = self.backbone(x, adapter_id=0)['features']
+        
+        res = dict()
+        res['features'] = features
+        res['logits'] = self.fc(features)['logits']
+                
+        return res
+        
+    def forward(self, x, adapter_id=-1, train=False, fc_only=False):
+        res = self.backbone(x, adapter_id, train, fc_only)
+
+        return res
