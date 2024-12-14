@@ -85,6 +85,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `FeCAM`: FeCAM:Exploiting the Heterogeneity of Class  Distributions in Exemplar-Free Continual Learning. NeurIPS 2023 [[paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/15294ba2dcfb4521274f7aa1c26f4dd4-Paper-Conference.pdf)]
 - `DGR`: Gradient Reweighting: Towards Imbalanced Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2402.18528)]
 - `Ease`: Expandable Subspace Ensemble for Pre-Trained Model-Based Class-Incremental Learning. CVPR 2024 [[paper](https://arxiv.org/abs/2403.12030)]
+- `CoFiMA`: Weighted Ensemble Models Are Strong Continual Learners. ECCV 2024 [[paper](https://arxiv.org/abs/2312.08977)]
 - `SimpleCIL`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 - `Aper`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 - `MOS`: Model Surgery for Pre-Trained Model-Based Class-Incremental Learning. AAAI 2025 [[paper](https://arxiv.org/abs/2412.09441)]
