@@ -228,6 +228,9 @@ def get_backbone(args, pretrained=False):
             elif name == "vit_base_patch16_224_in21k_mos":
                 model = vit_mos.vit_base_patch16_224_in21k_mos(num_classes=args["nb_classes"],
                     global_pool=False, drop_path_rate=0.0, tuning_config=tuning_config)
+            else:
+                raise NotImplementedError("Unknown type {}".format(name))
+            return model
     else:
         raise NotImplementedError("Unknown type {}".format(name))
 
