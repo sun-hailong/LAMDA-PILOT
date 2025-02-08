@@ -54,6 +54,8 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
     }
 
 ## 📰 What's New
+- [2025-02]🌟 Check out our [latest work](https://arxiv.org/abs/2305.19270) on class-incremental learning with vision-language models (**TPAMI 2025**)!
+- [2025-01]🌟 PILOT is accepted to SCIS!
 - [2024-12]🌟 Add [MOS](https://arxiv.org/abs/2412.09441). State-of-the-art method of 2025!
 - [2024-12]🌟 Check out our [latest work](https://arxiv.org/abs/2412.09441) on pre-trained model-based class-incremental learning (**AAAI 2025**)!
 - [2024-10]🌟 Check out our [latest work](https://arxiv.org/abs/2410.00911) on pre-trained model-based domain-incremental learning! 
@@ -65,7 +67,6 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - [2024-03]🌟 Check out our [latest work](https://arxiv.org/abs/2403.12030) on pre-trained model-based class-incremental learning (**CVPR 2024**)!
 - [2023-12]🌟 Add RanPAC.
 - [2023-09]🌟 Initial version of PILOT is released.
-- [2023-05]🌟 Check out our recent work about [class-incremental learning with vision-language models](https://arxiv.org/abs/2305.19270)!
 - [2023-01]🌟 As team members are committed to other projects and in light of the intense demands of code reviews, **we will prioritize reviewing algorithms that have explicitly cited and implemented methods from our toolbox paper in their publications.** Please read the [PR policy](resources/PR_policy.md) before submitting your code.
 
 ## 🌟 Methods Reproduced
