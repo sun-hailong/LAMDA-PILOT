@@ -54,6 +54,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
     }
 
 ## 📰 What's New
+- [2025-03]🌟 Add [DUCT](https://arxiv.org/abs/2410.00911). State-of-the-art method of 2025!
 - [2025-03]🌟 Check out our [latest work](https://arxiv.org/abs/2503.00823) on class-incremental learning (**CVPR 2025**)! 
 - [2025-02]🌟 Check out our [latest work](https://arxiv.org/abs/2410.00911) on pre-trained model-based domain-incremental learning (**CVPR 2025**)!
 - [2025-02]🌟 Check out our [latest work](https://arxiv.org/abs/2305.19270) on class-incremental learning with vision-language models (**TPAMI 2025**)!
@@ -91,6 +92,7 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 - `SimpleCIL`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 - `Aper`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 - `MOS`: Model Surgery for Pre-Trained Model-Based Class-Incremental Learning. AAAI 2025 [[paper](https://arxiv.org/abs/2412.09441)]
+- `DUCT`: Dual Consolidation for Pre-Trained Model-Based Domain-Incremental Learning. CVPR 2025 [[paper](https://arxiv.org/abs/2410.00911)]
 
 ## 📝 Reproduced Results
 
