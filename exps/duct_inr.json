@@ -1,0 +1,30 @@
+{
+    "prefix": "",
+    "dataset": "imagenetr",
+    "memory_size": 0,
+    "memory_per_class": 0,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 20,
+    "increment": 20,
+    "model_name": "duct",
+    "backbone_type": "vit_base_patch16_224",
+    
+    "device": ["0"],
+    "seed": [1993],
+    
+    "merge_scalar": 0.25,
+    "head_merge_ratio": 0.25,
+    "lr_re": 1e-3,
+    "epc_re": 5,
+    "bcb_lr_scale": 0.01,
+    "epochs" : 10,
+    "lrate" : 0.1,
+    
+    "ot_reg": 0.02,
+    "milestones": [60, 100, 140],
+    "lrate_decay" : 0.1,
+    "weight_decay" : 5e-4,
+    "batch_size" : 128,
+    "num_workers" : 16
+}

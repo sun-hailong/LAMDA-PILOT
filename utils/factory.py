@@ -44,6 +44,8 @@ def get_model(model_name, args):
         from models.mos import Learner
     elif name == 'cofima':
         from models.cofima import Learner
+    elif name == 'duct':
+        from models.duct import Learner
     else:
         assert 0
     return Learner(args)

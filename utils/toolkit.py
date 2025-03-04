@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import torch
+from collections import OrderedDict
+import copy
 
 
 def count_parameters(model, trainable=False):
@@ -82,3 +84,34 @@ def split_images_labels(imgs):
         labels.append(item[1])
 
     return np.array(images), np.array(labels)
+
+def state_dict_to_vector(state_dict, remove_keys=[]) -> torch.Tensor:
+    shared_state_dict = copy.deepcopy(state_dict)
+    shared_state_dict_keys = list(shared_state_dict.keys())
+    for key in remove_keys:
+        for _key in shared_state_dict_keys:
+            if key in _key:
+                del shared_state_dict[_key]
+    sorted_shared_state_dict = OrderedDict(sorted(shared_state_dict.items()))
+    return torch.nn.utils.parameters_to_vector(
+        [value.reshape(-1) for key, value in sorted_shared_state_dict.items()]
+    )
+
+
+def vector_to_state_dict(vector, state_dict, remove_keys=[]):
+    """
+    Load vector into state_dict, except the keys in `remove_keys`.
+    """
+    removed_keys = []
+    reference_dict = copy.deepcopy(state_dict)
+    reference_dict_keys = list(reference_dict.keys())
+    for key in remove_keys:
+        for _key in reference_dict_keys:
+            if key in _key:
+                removed_keys.append(_key)
+                del reference_dict[_key]
+    sorted_reference_dict = OrderedDict(sorted(reference_dict.items()))
+
+    torch.nn.utils.vector_to_parameters(vector, sorted_reference_dict.values())
+
+    return sorted_reference_dict
