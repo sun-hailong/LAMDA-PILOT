@@ -28,11 +28,15 @@ Welcome to PILOT, a pre-trained model-based continual learning toolbox <a href="
 
 **If you use any content of this repo for your work, please cite the following bib entries:**
 
-    @article{sun2023pilot,
-      title={PILOT: A Pre-Trained Model-Based Continual Learning Toolbox},
-      author={Sun, Hai-Long and Zhou, Da-Wei and Ye, Han-Jia and Zhan, De-Chuan},
-      journal={arXiv preprint arXiv:2309.07117},
-      year={2023}
+    @article{sun2025pilot,
+        title={PILOT: A Pre-Trained Model-Based Continual Learning Toolbox},
+        author={Sun, Hai-Long and Zhou, Da-Wei and Zhan, De-Chuan and Ye, Han-Jia},
+        journal={SCIENCE CHINA Information Sciences},
+        year={2025},
+        volume = {68},
+        number = {4},
+        pages = {147101},
+        doi = {https://doi.org/10.1007/s11432-024-4276-4}
     }
 
     @inproceedings{zhou2024continual,
